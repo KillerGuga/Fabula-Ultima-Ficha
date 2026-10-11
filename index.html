@@ -1,0 +1,2123 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Ficha Fabula Ultima</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚔️</text></svg>" />
+<link rel="manifest" href="manifest.json" />
+<link rel="apple-touch-icon" href="icons/icon-192.png" />
+<meta name="theme-color" content="#1a1a2e" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="F.Ultima" />
+<style>
+:root{
+  --bg:#0f0f1a;--bg-card:#1a1a2e;--bg-input:#252540;--border:#3a3a5c;
+  --accent:#6ea8ff;--accent-2:#ffd166;--danger:#e63946;--ok:#6ee7a0;
+  --text:#e8e8f0;--muted:#8a8ab0;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--text);
+  font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-size:15px}
+.topbar{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;
+  background:linear-gradient(180deg,#232342,#1a1a2e);border-bottom:2px solid var(--accent);
+  position:sticky;top:0;z-index:10;flex-wrap:wrap;gap:8px}
+.topbar h1{font-size:18px;margin:0;letter-spacing:.5px}
+.topbar h1 span{color:var(--muted);font-weight:400}
+.actions{display:flex;gap:6px;flex-wrap:wrap}
+button{background:var(--bg-input);color:var(--text);border:1px solid var(--border);
+  padding:6px 12px;border-radius:6px;cursor:pointer;font-size:13px}
+button:hover:not(:disabled){border-color:var(--accent);color:var(--accent)}
+button:disabled{opacity:.4;cursor:not-allowed}
+button.danger:hover{border-color:var(--danger);color:var(--danger)}
+button.add{font-size:12px;padding:3px 8px;margin-left:8px;vertical-align:middle}
+main{max-width:1000px;margin:0 auto;padding:16px;display:flex;flex-direction:column;gap:16px}
+.card{background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:16px}
+.card h2{margin:0 0 12px;font-size:15px;text-transform:uppercase;letter-spacing:1px;
+  color:var(--accent-2);border-bottom:1px solid var(--border);padding-bottom:8px}
+.grid{display:grid;gap:10px}
+.grid-2{grid-template-columns:repeat(2,1fr)}
+.grid-3{grid-template-columns:repeat(3,1fr)}
+.grid-4{grid-template-columns:repeat(4,1fr)}
+@media(max-width:720px){.grid-2,.grid-3,.grid-4{grid-template-columns:1fr 1fr}}
+@media(max-width:480px){.grid-2,.grid-3,.grid-4{grid-template-columns:1fr}}
+label{display:flex;flex-direction:column;font-size:12px;color:var(--muted);gap:4px}
+label.full{grid-column:1/-1}
+label.mini{font-size:11px;flex-direction:row;align-items:center;gap:6px;margin-top:4px}
+label.mini input{width:60px;padding:3px 6px;font-size:12px}
+input[type=text],input[type=number],select,textarea{background:var(--bg-input);
+  border:1px solid var(--border);color:var(--text);padding:8px 10px;border-radius:6px;
+  font-size:14px;font-family:inherit;width:100%}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent);
+  box-shadow:0 0 0 2px rgba(110,168,255,.2)}
+textarea{resize:vertical}
+.stat{background:var(--bg-input);border:1px solid var(--border);border-radius:8px;padding:10px;
+  display:flex;flex-direction:column;gap:6px}
+.stat-label{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--accent-2)}
+.stat-values{display:flex;align-items:center;gap:6px;font-size:20px;font-weight:700}
+.stat-values input{width:70px;font-size:20px;font-weight:700;padding:4px 8px}
+.stat-values .sep{color:var(--muted);font-weight:400}
+.stat small{color:var(--muted);font-size:11px}
+.nivel-status{padding:10px 14px;border-radius:6px;font-size:13px;margin-bottom:12px;
+  border:1px solid transparent;display:flex;align-items:center;gap:6px;line-height:1.4}
+.nivel-status.ok{background:rgba(46,160,67,.12);border-color:rgba(46,160,67,.45);color:var(--ok)}
+.nivel-status.warn-baixo{background:rgba(255,209,102,.12);border-color:rgba(255,209,102,.45);color:#ffd166}
+.nivel-status.warn-alto{background:rgba(230,57,70,.12);border-color:rgba(230,57,70,.45);color:#ff7a85}
+
+/* Experiência */
+.xp-box{background:var(--bg-input);border:1px solid var(--border);border-radius:8px;padding:12px;
+  display:flex;flex-direction:column;gap:8px}
+.xp-box .xp-num{font-size:32px;font-weight:800;color:var(--accent);text-align:center;line-height:1}
+.xp-box .xp-label{font-size:11px;text-transform:uppercase;letter-spacing:1px;
+  color:var(--accent-2);text-align:center}
+.btn-level-up{padding:10px 16px;font-size:14px;font-weight:700;width:100%;
+  background:linear-gradient(135deg,rgba(110,168,255,.15),rgba(180,150,255,.15));
+  border:1px solid var(--accent);color:var(--accent)}
+.btn-level-up:hover:not(:disabled){background:var(--accent);color:#0f0f1a}
+.btn-level-up:disabled{background:var(--bg-input);border-color:var(--border);
+  color:var(--muted);opacity:.6}
+.xp-msg{font-size:12px;color:var(--muted);text-align:center;line-height:1.4;min-height:16px}
+.xp-msg.pronto{color:var(--ok)}
+.xp-msg.bloqueado{color:var(--accent-2)}
+.btn-nova-sessao{margin-top:8px;font-size:11px;padding:5px 10px;width:100%}
+
+.class-card{background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:8px;
+  padding:12px;margin-bottom:12px}
+.class-card.dominada{border-color:rgba(110,168,255,.5)}
+.class-header{display:grid;grid-template-columns:2fr 90px 60px auto;gap:8px;align-items:end;margin-bottom:10px}
+.class-header .lvl-badge{display:flex;flex-direction:column;gap:4px;font-size:11px;color:var(--muted)}
+.class-header .lvl-badge .num{background:var(--bg-input);border:1px solid var(--border);
+  border-radius:6px;padding:8px 10px;font-size:14px;font-weight:700;color:var(--accent);text-align:center}
+.class-card.dominada .lvl-badge .num{border-color:var(--ok);color:var(--ok)}
+.dominada-badge{font-size:10px;color:var(--ok);text-transform:uppercase;letter-spacing:1px;
+  text-align:center;margin-top:2px}
+.beneficios{display:flex;flex-wrap:wrap;gap:6px;padding:8px 10px;margin-bottom:10px;
+  background:rgba(110,168,255,.06);border-left:3px solid var(--accent);border-radius:4px;font-size:12px}
+.beneficios.nao-ativa{opacity:.55;border-left-color:var(--muted)}
+.beneficio-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:4px;
+  background:rgba(110,168,255,.12);border:1px solid rgba(110,168,255,.3);color:var(--text);
+  font-size:11px;line-height:1.3}
+.beneficio-badge.bonus{color:var(--accent-2);border-color:rgba(255,209,102,.4);background:rgba(255,209,102,.08)}
+.beneficio-badge.marcial{color:#b5e6c6;border-color:rgba(110,231,160,.4);background:rgba(110,231,160,.08)}
+.beneficio-badge.ritual{color:#c8b6ff;border-color:rgba(180,150,255,.4);background:rgba(180,150,255,.08)}
+.beneficio-badge .label{color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.5px}
+.ability-row{display:grid;grid-template-columns:1fr 60px;gap:8px;padding:6px 0;
+  border-bottom:1px dashed rgba(255,255,255,.06);align-items:center}
+.ability-row:last-child{border-bottom:none}
+.ability-name{font-size:13px;color:var(--text);display:flex;flex-direction:column;gap:2px}
+.ability-name .max{font-size:10px;color:var(--muted)}
+.ability-row input[type=number]{padding:4px 6px;font-size:13px;text-align:center;width:100%}
+.ability-desc{margin:-4px 0 8px 0;padding:8px 10px;background:rgba(110,168,255,.05);
+  border-left:2px solid var(--accent);border-radius:4px;font-size:12px;line-height:1.5;color:var(--text)}
+.ability-name.clickable{cursor:pointer;user-select:none}
+.ability-name.clickable:hover span:first-child{color:var(--accent)}
+.ability-name .expand-icon{display:inline-block;width:14px;color:var(--muted);font-size:10px;
+  margin-right:4px;transition:transform .15s}
+.ability-name.expanded .expand-icon{transform:rotate(90deg);color:var(--accent)}
+.spell-picker,.text-picker{margin-top:8px;padding-top:8px;border-top:1px dashed rgba(110,168,255,.3);
+  display:grid;gap:6px}
+.spell-picker label,.text-picker label{display:grid;grid-template-columns:80px 1fr;
+  align-items:center;font-size:11px;color:var(--muted)}
+.spell-picker select,.text-picker input{padding:4px 6px;font-size:12px}
+.spell-desc{font-size:11px;color:var(--text);padding:4px 8px;margin:-2px 0 4px 0;
+  background:rgba(110,168,255,.04);border-left:2px solid rgba(110,168,255,.4);
+  border-radius:3px;line-height:1.4}
+.escolha-bonus{margin-bottom:10px;padding:8px 10px;background:rgba(255,209,102,.06);
+  border-left:3px solid var(--accent-2);border-radius:4px}
+.escolha-bonus label{display:grid;grid-template-columns:200px 1fr;align-items:center;font-size:12px;color:var(--text)}
+.escolha-bonus select{padding:4px 6px;font-size:12px}
+.poder-heroico{margin-top:10px;padding:10px;background:rgba(180,150,255,.08);
+  border:1px solid rgba(180,150,255,.4);border-radius:6px}
+.poder-heroico .titulo{font-size:11px;text-transform:uppercase;letter-spacing:1px;
+  color:#c8b6ff;margin-bottom:6px}
+.poder-heroico select{width:100%;padding:6px 8px;font-size:13px;background:var(--bg-input);
+  color:var(--text);border:1px solid var(--border);border-radius:4px}
+.poder-heroico .poder-desc{font-size:12px;color:var(--text);margin-top:8px;padding:8px;
+  background:rgba(0,0,0,.2);border-radius:4px;line-height:1.4}
+.poder-heroico .trocar{margin-top:6px;font-size:11px;padding:3px 8px;background:transparent;
+  border:1px dashed var(--border);color:var(--muted);border-radius:4px;cursor:pointer}
+.poder-heroico .trocar:hover{border-color:#c8b6ff;color:#c8b6ff}
+.toggle-hab{display:block;margin-top:10px;font-size:11px;padding:4px 8px;background:transparent;
+  border:1px dashed var(--border);color:var(--muted);width:100%}
+.toggle-hab:hover{border-color:var(--accent);color:var(--accent)}
+.combo{position:relative;width:100%}
+.combo-input{width:100%}
+.combo-list{position:absolute;top:100%;left:0;right:0;max-height:260px;overflow-y:auto;
+  background:var(--bg-input);border:1px solid var(--accent);border-radius:6px;margin-top:2px;
+  z-index:100;box-shadow:0 6px 16px rgba(0,0,0,.4)}
+.combo-opt{padding:6px 10px;cursor:pointer;font-size:13px;color:var(--text)}
+.combo-opt:hover,.combo-opt.active{background:var(--accent);color:#0f0f1a}
+.combo-empty{padding:6px 10px;font-size:12px;color:var(--muted);font-style:italic}
+.row-laco{grid-template-columns:2fr 1fr auto}
+.remove-btn{background:transparent;border-color:var(--danger);color:var(--danger);padding:6px 10px}
+.equip-aviso{padding:10px 14px;border-radius:6px;font-size:13px;margin-bottom:12px;
+  border:1px solid transparent;line-height:1.4}
+.equip-aviso.ok{background:rgba(46,160,67,.1);border-color:rgba(46,160,67,.3);color:var(--ok)}
+.equip-aviso.aviso{background:rgba(255,209,102,.1);border-color:rgba(255,209,102,.3);color:#ffd166}
+.slot{background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:8px;padding:10px;
+  display:flex;flex-direction:column;gap:8px;min-height:110px;position:relative}
+.slot.disabled{opacity:.45;pointer-events:none}
+.slot-label{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--accent-2)}
+.slot-item{background:var(--bg-input);border:1px solid var(--border);border-radius:6px;padding:8px 10px;
+  font-size:13px;line-height:1.5;position:relative;padding-right:36px}
+.slot-item .nome{font-weight:700;color:var(--text);display:block;margin-bottom:4px}
+.slot-item .meta{font-size:11px;color:var(--muted)}
+.slot-item .stat-line{font-size:12px;color:var(--text);margin-top:2px}
+.slot-item .tag{display:inline-block;padding:1px 6px;border-radius:3px;font-size:10px;
+  text-transform:uppercase;letter-spacing:.5px;margin-left:6px;vertical-align:middle}
+.tag-marcial{background:rgba(110,231,160,.15);color:#b5e6c6;border:1px solid rgba(110,231,160,.4)}
+.tag-duas{background:rgba(255,209,102,.15);color:#ffd166;border:1px solid rgba(255,209,102,.4)}
+.tag-raro{background:rgba(180,150,255,.15);color:#c8b6ff;border:1px solid rgba(180,150,255,.4)}
+.slot-item .unequip{position:absolute;top:6px;right:6px;background:transparent;border:1px solid var(--danger);
+  color:var(--danger);border-radius:4px;padding:2px 6px;font-size:11px;cursor:pointer}
+.slot-empty{font-size:12px;color:var(--muted);font-style:italic;padding:4px 0}
+.slot-msg{font-size:11px;color:var(--muted);font-style:italic}
+.inv-lista{display:flex;flex-direction:column;gap:6px;margin-top:12px}
+.inv-item{display:grid;grid-template-columns:1fr auto auto;gap:8px;align-items:center;
+  background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:6px;padding:8px 10px}
+.inv-item.equipado{border-color:var(--accent);background:rgba(110,168,255,.08)}
+.inv-item .info{font-size:13px;line-height:1.4}
+.inv-item .info .nome{font-weight:700;color:var(--text);display:block}
+.inv-item .info .detalhe{font-size:11px;color:var(--muted);margin-top:2px}
+.inv-vazio{font-size:12px;color:var(--muted);font-style:italic;padding:8px 0;text-align:center}
+.inv-add-bar{display:grid;grid-template-columns:140px 170px 1fr;gap:10px;align-items:end}
+@media(max-width:720px){
+  .inv-add-bar{grid-template-columns:1fr 1fr}
+  .inv-add-bar .combo{grid-column:1/-1}
+}
+@media(max-width:480px){.inv-add-bar{grid-template-columns:1fr}}
+#inv-cat:disabled{opacity:.5;cursor:not-allowed}
+.btn-equip{font-size:11px;padding:3px 8px}
+.btn-remove-inv{font-size:11px;padding:3px 8px;color:var(--danger);border-color:var(--danger)}
+.btn-remove-inv:hover{background:rgba(230,57,70,.15)}
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:200;
+  display:flex;align-items:center;justify-content:center;padding:16px}
+.modal{background:var(--bg-card);border:1px solid var(--accent);border-radius:10px;
+  padding:20px;max-width:520px;width:100%;max-height:90vh;overflow-y:auto}
+.modal h3{margin:0 0 12px;color:var(--accent-2);font-size:15px;letter-spacing:1px;text-transform:uppercase}
+.modal .grid{margin-bottom:12px}
+.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:16px}
+
+/* Arcanos */
+.arcano-item{background:rgba(180,150,255,.06);border:1px solid rgba(180,150,255,.35);
+  border-radius:6px;padding:10px;margin-bottom:8px;position:relative}
+.arcano-item .nome{font-weight:700;color:#c8b6ff;font-size:14px;display:block;margin-bottom:2px}
+.arcano-item .dominios{font-size:11px;color:var(--muted);font-style:italic;margin-bottom:8px}
+.arcano-item .bloco{margin-top:6px;font-size:12px;line-height:1.5}
+.arcano-item .bloco strong{color:var(--accent);display:block;font-size:10px;
+  text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px}
+.arcano-item .fundido-flag{
+  display:inline-block;font-size:10px;padding:2px 8px;border-radius:3px;
+  background:rgba(110,231,160,.15);color:#b5e6c6;border:1px solid rgba(110,231,160,.4);
+  text-transform:uppercase;letter-spacing:.5px;margin-left:8px;vertical-align:middle;
+}
+.arcano-item .controles{display:flex;gap:6px;margin-top:8px}
+.arcano-item .btn-fundir,.arcano-item .btn-remove-arcano{font-size:11px;padding:3px 8px}
+.arcano-item .btn-fundir{background:transparent;border:1px dashed var(--border);color:var(--muted);border-radius:4px}
+.arcano-item .btn-fundir:hover{border-color:var(--ok);color:var(--ok)}
+.arcano-item .btn-fundir.ativo{border-color:var(--ok);color:var(--ok);border-style:solid}
+.arcano-item .btn-remove-arcano{background:transparent;border:1px solid var(--danger);color:var(--danger);border-radius:4px}
+.arcano-item .btn-remove-arcano:hover{background:rgba(230,57,70,.15)}
+.arcano-info-box{padding:10px;background:rgba(110,168,255,.06);border-left:3px solid var(--accent);
+  border-radius:4px;font-size:12px;color:var(--text);margin-bottom:12px;line-height:1.5}
+
+/* Imitação Mágica */
+.imita-item{margin-bottom:6px}
+.imita-item label{display:grid;grid-template-columns:120px 1fr;align-items:center;gap:8px;
+  font-size:12px;color:var(--muted)}
+.imita-item input{padding:6px 10px;font-size:13px}
+
+/* Diário / anotações */
+.diario-item{background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:6px;
+  padding:10px;margin-bottom:8px}
+.diario-item .diario-head{display:grid;grid-template-columns:auto 1fr auto;gap:8px;align-items:center;margin-bottom:6px}
+.diario-item .diario-head input[type=text]{font-weight:700}
+.diario-item .diario-head .btn-remove-diario{font-size:11px;padding:3px 8px;color:var(--danger);border-color:var(--danger);background:transparent}
+.diario-item textarea{font-size:13px;line-height:1.5}
+
+footer{text-align:center;color:var(--muted);padding:20px 0 40px;font-size:12px}
+@media(prefers-color-scheme:light){
+  :root{--bg:#f4f4f8;--bg-card:#fff;--bg-input:#f0f0f5;--border:#d0d0dd;--text:#1a1a2e;--muted:#6a6a8a}
+  .class-card,.slot,.inv-item,.diario-item{background:rgba(0,0,0,.02)}
+  .ability-row{border-bottom-color:rgba(0,0,0,.06)}
+}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <h1>Fabula Ultima <span>— Ficha</span></h1>
+  <div class="actions">
+    <button id="btn-export">Exportar</button>
+    <button id="btn-import">Importar</button>
+    <button id="btn-reset" class="danger">Resetar</button>
+    <input type="file" id="file-import" accept="application/json" hidden />
+  </div>
+</header>
+
+<main>
+  <section class="card">
+    <h2>Identidade</h2>
+    <div class="grid grid-4">
+      <label>Nome <input data-bind="nome" type="text" /></label>
+      <label>Pronomes <input data-bind="pronomes" type="text" /></label>
+      <label>Nível <input data-bind="nivel" type="number" min="5" max="50" value="5" /></label>
+      <label>Zênites <input data-bind="zenites" type="number" min="0" value="0" /></label>
+    </div>
+    <div class="grid grid-3" style="margin-top:10px">
+      <label>Identidade <input data-bind="identidade" type="text" /></label>
+      <label>Tema <input data-bind="tema" type="text" /></label>
+      <label>Origem <input data-bind="origem" type="text" /></label>
+    </div>
+  </section>
+
+  <!-- EXPERIÊNCIA -->
+  <section class="card" id="card-experiencia">
+    <h2>Experiência</h2>
+    <div class="grid grid-2">
+      <div class="xp-box">
+        <div class="xp-label">XP disponível</div>
+        <input data-bind="xp" type="number" min="0" value="0" style="font-size:24px;font-weight:700;text-align:center" />
+      </div>
+      <div class="xp-box">
+        <div class="xp-label">Nível atual</div>
+        <div class="xp-num" data-calc="nivelDisplay">5</div>
+      </div>
+    </div>
+    <div style="margin-top:12px">
+      <button id="btn-level-up" class="btn-level-up">Subir de Nível (−10 XP)</button>
+      <div id="xp-msg" class="xp-msg"></div>
+      <button id="btn-nova-sessao" class="btn-nova-sessao" style="display:none">
+        Marcar nova sessão (libera subir de nível novamente)
+      </button>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Atributos</h2>
+    <div class="grid grid-4">
+      <label>Destreza <select data-bind="atributos.des"><option value="6">d6</option><option value="8" selected>d8</option><option value="10">d10</option><option value="12">d12</option></select></label>
+      <label>Vigor <select data-bind="atributos.vig"><option value="6">d6</option><option value="8" selected>d8</option><option value="10">d10</option><option value="12">d12</option></select></label>
+      <label>Astúcia <select data-bind="atributos.ast"><option value="6">d6</option><option value="8" selected>d8</option><option value="10">d10</option><option value="12">d12</option></select></label>
+      <label>Vontade <select data-bind="atributos.von"><option value="6">d6</option><option value="8" selected>d8</option><option value="10">d10</option><option value="12">d12</option></select></label>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Recursos</h2>
+    <div class="grid grid-4">
+      <div class="stat">
+        <span class="stat-label">PV</span>
+        <div class="stat-values">
+          <input data-bind="pv.atual" type="number" min="0" />
+          <span class="sep">/</span>
+          <span data-calc="pvMax">–</span>
+        </div>
+        <label class="mini">Bônus <input data-bind="pv.bonus" type="number" value="0" /></label>
+        <small>Crise: <span data-calc="crise">–</span></small>
+      </div>
+      <div class="stat">
+        <span class="stat-label">PM</span>
+        <div class="stat-values">
+          <input data-bind="pm.atual" type="number" min="0" />
+          <span class="sep">/</span>
+          <span data-calc="pmMax">–</span>
+        </div>
+        <label class="mini">Bônus <input data-bind="pm.bonus" type="number" value="0" /></label>
+      </div>
+      <div class="stat">
+        <span class="stat-label">P. Inventário</span>
+        <div class="stat-values">
+          <input data-bind="pi.atual" type="number" min="0" />
+          <span class="sep">/</span>
+          <span data-calc="piMax">–</span>
+        </div>
+        <label class="mini">Bônus <input data-bind="pi.bonus" type="number" value="0" /></label>
+      </div>
+      <div class="stat">
+        <span class="stat-label">Iniciativa</span>
+        <div class="stat-values"><span data-calc="iniciativa">0</span></div>
+        <label class="mini">Bônus <input data-bind="iniciativa.bonus" type="number" value="0" /></label>
+      </div>
+    </div>
+    <div class="grid grid-3" style="margin-top:10px">
+      <div class="stat">
+        <span class="stat-label">Defesa</span>
+        <div class="stat-values"><span data-calc="defesa">–</span></div>
+        <label class="mini">Bônus <input data-bind="defesa.bonus" type="number" value="0" /></label>
+      </div>
+      <div class="stat">
+        <span class="stat-label">Defesa Mágica</span>
+        <div class="stat-values"><span data-calc="defM">–</span></div>
+        <label class="mini">Bônus <input data-bind="defM.bonus" type="number" value="0" /></label>
+      </div>
+      <div class="stat">
+        <span class="stat-label">Pontos de Fábula</span>
+        <div class="stat-values"><input data-bind="pontosFabula" type="number" min="0" value="3" /></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Laços <button class="add" data-add="lacos">+ Laço</button></h2>
+    <div id="lacos"></div>
+  </section>
+
+  <section class="card">
+    <h2>Classes e Habilidades <button class="add" data-add="classes">+ Classe</button></h2>
+    <div id="nivel-status" class="nivel-status ok"></div>
+    <div id="classes"></div>
+  </section>
+
+  <section class="card">
+    <h2>Inventário <button class="add" id="btn-add-custom">+ Item personalizado</button></h2>
+    <div class="inv-add-bar">
+      <label>Tipo
+        <select id="inv-tipo">
+          <option value="">— Todos —</option>
+          <option value="arma">Arma</option>
+          <option value="armadura">Armadura</option>
+          <option value="escudo">Escudo</option>
+          <option value="acessorio">Acessório</option>
+        </select>
+      </label>
+      <label>Categoria
+        <select id="inv-cat" disabled>
+          <option value="">— Todas —</option>
+        </select>
+      </label>
+      <div class="combo" id="inv-search-combo">
+        <label>Item
+          <input type="text" class="combo-input" id="inv-search"
+                 placeholder="Buscar por nome..." autocomplete="off" />
+        </label>
+        <div class="combo-list" hidden id="inv-search-list"></div>
+      </div>
+    </div>
+    <div class="inv-lista" id="inv-lista"></div>
+  </section>
+
+  <section class="card">
+    <h2>Equipamento</h2>
+    <div id="equip-aviso"></div>
+    <div class="grid grid-2">
+      <div class="slot" data-slot="principal"><div class="slot-label">Mão dominante</div><div class="slot-body"></div></div>
+      <div class="slot" data-slot="secundaria"><div class="slot-label">Mão secundária</div><div class="slot-body"></div></div>
+      <div class="slot" data-slot="armadura"><div class="slot-label">Armadura</div><div class="slot-body"></div></div>
+      <div class="slot" data-slot="acessorio"><div class="slot-label">Acessório</div><div class="slot-body"></div></div>
+    </div>
+  </section>
+
+  <section class="card" id="secao-arcanos" style="display:none">
+    <h2>Arcanos Vinculados</h2>
+    <div class="arcano-info-box">
+      Esta seção aparece porque você tem <strong>Arcanista</strong> com pelo menos 1 ponto em <strong>Vincular e Invocar</strong>. Adicione aqui os Arcanos que seu personagem vinculou à alma.
+    </div>
+    <div class="combo" id="arcano-search-combo" style="margin-bottom:12px">
+      <label>Adicionar Arcano
+        <input type="text" class="combo-input" id="arcano-search"
+               placeholder="Buscar Arcano por nome ou domínio..." autocomplete="off" />
+      </label>
+      <div class="combo-list" hidden id="arcano-search-list"></div>
+    </div>
+    <div id="arcanos-lista"></div>
+  </section>
+
+  <section class="card" id="secao-imitacao" style="display:none">
+    <h2>Imitação Mágica</h2>
+    <div class="arcano-info-box">
+      Esta seção aparece porque você tem <strong>Quimerista</strong> com pelo menos 1 ponto em <strong>Imitação Mágica</strong>. Anote aqui as magias que seu personagem aprendeu de criaturas.
+    </div>
+    <div id="imitacao-lista"></div>
+  </section>
+
+  <section class="card">
+    <h2>Feitiços Extras / Outras Habilidades</h2>
+    <label class="full">Feitiços vindos de Poder Heroico, itens raros, Arcanos ou outras fontes
+      <textarea data-bind="feiticos" rows="4"></textarea>
+    </label>
+  </section>
+
+  <section class="card">
+    <h2>Diário de Sessão <button class="add" id="btn-add-diario">+ Entrada</button></h2>
+    <div id="diario-lista"></div>
+  </section>
+
+  <section class="card">
+    <h2>Anotações Gerais</h2>
+    <label class="full">NPCs, objetivos, promessas, teorias, o que quiser
+      <textarea data-bind="anotacoes" rows="10"></textarea>
+    </label>
+  </section>
+
+  <footer>Dados salvos automaticamente no seu navegador.</footer>
+</main>
+
+<div id="modal-root"></div>
+
+<script>
+/* =========================================================================
+   CATÁLOGO DE ITENS
+   ========================================================================= */
+const CATALOGO=[
+  {n:"Cajado",tipo:"arma",cat:"Arcana",z:100,p:"[VON + VON]",d:"[RA + 6] físico",m:2,a:"cac",mr:null},
+  {n:"Tomo",tipo:"arma",cat:"Arcana",z:100,p:"[AST + AST]",d:"[RA + 6] físico",m:2,a:"cac",mr:null},
+  {n:"Besta",tipo:"arma",cat:"Arco",z:150,p:"[DES + AST]",d:"[RA + 8] físico",m:2,a:"dist",mr:null},
+  {n:"Arco curto",tipo:"arma",cat:"Arco",z:200,p:"[DES + DES]",d:"[RA + 8] físico",m:2,a:"dist",mr:null},
+  {n:"Ataque desarmado",tipo:"arma",cat:"Luta",z:0,p:"[DES + VIG]",d:"[RA + 0] físico",m:1,a:"cac",mr:null},
+  {n:"Improvisada (CaC)",tipo:"arma",cat:"Luta",z:0,p:"[DES + VIG]",d:"[RA + 2] físico",m:1,a:"cac",mr:null},
+  {n:"Soqueira de ferro",tipo:"arma",cat:"Luta",z:150,p:"[DES + VIG]",d:"[RA + 6] físico",m:1,a:"cac",mr:null},
+  {n:"Adaga de aço",tipo:"arma",cat:"Adaga",z:150,p:"[DES + AST] +1",d:"[RA + 4] físico",m:1,a:"cac",mr:null},
+  {n:"Pistola",tipo:"arma",cat:"Arma de fogo",z:250,p:"[DES + AST]",d:"[RA + 8] físico",m:1,a:"dist",mr:"arma_dist"},
+  {n:"Chicote de correntes",tipo:"arma",cat:"Malho",z:150,p:"[DES + DES]",d:"[RA + 8] físico",m:2,a:"cac",mr:null},
+  {n:"Martelo de ferro",tipo:"arma",cat:"Pesada",z:200,p:"[VIG + VIG]",d:"[RA + 6] físico",m:1,a:"cac",mr:null},
+  {n:"Machado largo",tipo:"arma",cat:"Pesada",z:250,p:"[VIG + VIG]",d:"[RA + 10] físico",m:1,a:"cac",mr:"arma_cac"},
+  {n:"Machado de guerra",tipo:"arma",cat:"Pesada",z:250,p:"[VIG + VIG]",d:"[RA + 14] físico",m:2,a:"cac",mr:"arma_cac"},
+  {n:"Lança leve",tipo:"arma",cat:"Lança",z:200,p:"[DES + VIG]",d:"[RA + 8] físico",m:1,a:"cac",mr:"arma_cac"},
+  {n:"Lança pesada",tipo:"arma",cat:"Lança",z:200,p:"[DES + VIG]",d:"[RA + 12] físico",m:2,a:"cac",mr:"arma_cac"},
+  {n:"Espada de bronze",tipo:"arma",cat:"Espada",z:200,p:"[DES + VIG] +1",d:"[RA + 6] físico",m:1,a:"cac",mr:"arma_cac"},
+  {n:"Montante",tipo:"arma",cat:"Espada",z:200,p:"[DES + VIG] +1",d:"[RA + 10] físico",m:2,a:"cac",mr:"arma_cac"},
+  {n:"Katana",tipo:"arma",cat:"Espada",z:200,p:"[DES + AST] +1",d:"[RA + 10] físico",m:2,a:"cac",mr:"arma_cac"},
+  {n:"Rapieira",tipo:"arma",cat:"Espada",z:200,p:"[DES + AST] +1",d:"[RA + 6] físico",m:1,a:"cac",mr:"arma_cac"},
+  {n:"Improvisada (arremesso)",tipo:"arma",cat:"Arremesso",z:0,p:"[DES + VIG]",d:"[RA + 2] físico",m:1,a:"dist",mr:null},
+  {n:"Shuriken",tipo:"arma",cat:"Arremesso",z:150,p:"[DES + AST]",d:"[RA + 4] físico",m:1,a:"dist",mr:null},
+  {n:"Maça Abençoada",tipo:"arma",cat:"Arcana",z:200,raro:1,p:"[VON + VON]",d:"[RA + 2] luz",m:1,a:"cac",mr:null},
+  {n:"Enciclopédia",tipo:"arma",cat:"Arcana",z:600,raro:1,p:"[AST + AST]",d:"[RA + 6] físico",m:2,a:"cac",mr:null,desc:"Imune a atordoado"},
+  {n:"Ars Goetia",tipo:"arma",cat:"Arcana",z:800,raro:1,p:"[AST + AST]",d:"[RA + 6] luz",m:2,a:"cac",mr:null,desc:"+2 Magia contra demônios"},
+  {n:"Férula",tipo:"arma",cat:"Arcana",z:1050,raro:1,p:"[AST + VON]",d:"[RA + 2] físico",m:1,a:"cac",mr:null,desc:"+1 em testes de Magia"},
+  {n:"Cetro da Tirania",tipo:"arma",cat:"Arcana",z:1200,raro:1,p:"[VON + VON]",d:"[RA + 6] trevas",m:2,a:"cac",mr:null,desc:"Alvos perdem 10 PM"},
+  {n:"Necronomicon",tipo:"arma",cat:"Arcana",z:1800,raro:1,p:"[AST + VON] +1",d:"[RA + 6] trevas",m:2,a:"cac",mr:null,desc:"Alvos de feitiços ofensivos ficam abalados"},
+  {n:"Livro Amarelo",tipo:"arma",cat:"Arcana",z:2100,raro:1,p:"[AST + AST]",d:"[RA + 6] físico",m:2,a:"cac",mr:null,desc:"Feitiços causam +5 de dano"},
+  {n:"Besta de Mão",tipo:"arma",cat:"Arco",z:150,raro:1,p:"[DES + AST]",d:"[RA + 4] físico",m:1,a:"dist",mr:null},
+  {n:"Arco Composto",tipo:"arma",cat:"Arco",z:250,raro:1,p:"[DES + VIG] +1",d:"[RA + 8] físico",m:2,a:"dist",mr:null},
+  {n:"Quebra-cerco",tipo:"arma",cat:"Arco",z:750,raro:1,p:"[DES + AST]",d:"[RA + 12] físico",m:2,a:"dist",mr:"arma_dist",desc:"Dano ignora Resistência"},
+  {n:"Yoichi",tipo:"arma",cat:"Arco",z:900,raro:1,p:"[DES + DES] +1",d:"[RA + 8] ar",m:2,a:"dist",mr:"arma_dist",desc:"Imune a abalado"},
+  {n:"Besta Repetidora",tipo:"arma",cat:"Arco",z:1350,raro:1,p:"[DES + AST]",d:"[RA + 12] físico",m:2,a:"dist",mr:"arma_cac",desc:"multi (2)"},
+  {n:"Ártemis",tipo:"arma",cat:"Arco",z:2100,raro:1,p:"[DES + DES] +1",d:"[RA + 12] luz",m:2,a:"dist",mr:"arma_dist",desc:"Imune a dano de trevas"},
+  {n:"Nekode",tipo:"arma",cat:"Luta",z:250,raro:1,p:"[DES + VIG] +1",d:"[RA + 6] físico",m:1,a:"cac",mr:null},
+  {n:"Punho Infernal",tipo:"arma",cat:"Luta",z:350,raro:1,p:"[DES + VIG]",d:"[RA + 6] trevas",m:1,a:"cac",mr:null,desc:"Ataca Def.M"},
+  {n:"Pata de Urso",tipo:"arma",cat:"Luta",z:850,raro:1,p:"[DES + VIG]",d:"[RA + 10] físico",m:1,a:"cac",mr:"arma_cac",desc:"Imune a fraco"},
+  {n:"Punho-combustível",tipo:"arma",cat:"Luta",z:950,raro:1,p:"[DES + VIG]",d:"[RA + 6] fogo",m:1,a:"cac",mr:null,desc:"Resistência a fogo"},
+  {n:"Garra de Prata",tipo:"arma",cat:"Luta",z:1100,raro:1,p:"[DES + DES]",d:"[RA + 6] luz",m:1,a:"cac",mr:null,desc:"+1 Def.M"},
+  {n:"Mão de Deus",tipo:"arma",cat:"Luta",z:2550,raro:1,p:"[DES + VIG] +1",d:"[RA + 10] luz",m:1,a:"cac",mr:"arma_cac",desc:"Dano ignora Afinidade"},
+  {n:"Latrodectus",tipo:"arma",cat:"Adaga",z:250,raro:1,p:"[DES + AST] +1",d:"[RA + 4] veneno",m:1,a:"cac",mr:null},
+  {n:"Corta-átomo",tipo:"arma",cat:"Adaga",z:600,raro:1,p:"[DES + DES] +1",d:"[RA + 4] físico",m:2,a:"dist",mr:null,desc:"Dano ignora Resistência"},
+  {n:"Quebra-feitiço",tipo:"arma",cat:"Adaga",z:850,raro:1,p:"[DES + AST] +1",d:"[RA + 4] trevas",m:1,a:"cac",mr:null,desc:"Pode encerrar feitiços de duração Cena"},
+  {n:"Lâmina do Assassino",tipo:"arma",cat:"Adaga",z:1000,raro:1,p:"[DES + AST] +1",d:"[RA + 4] físico",m:1,a:"cac",mr:null,desc:"+5 contra alvos em crise"},
+  {n:"Vespa",tipo:"arma",cat:"Adaga",z:2200,raro:1,p:"[DES + DES] +1",d:"[RA + 4] físico",m:1,a:"cac",mr:null,desc:"multi (3)"},
+  {n:"Revólver",tipo:"arma",cat:"Arma de fogo",z:300,raro:1,p:"[DES + DES]",d:"[RA + 8] físico",m:1,a:"dist",mr:"arma_dist"},
+  {n:"Istinggar",tipo:"arma",cat:"Arma de fogo",z:350,raro:1,p:"[DES + AST] +1",d:"[RA + 12] físico",m:2,a:"dist",mr:"arma_cac"},
+  {n:"Pistola-diamante",tipo:"arma",cat:"Arma de fogo",z:650,raro:1,p:"[DES + AST] +1",d:"[RA + 8] físico",m:1,a:"dist",mr:"arma_dist",desc:"+5 contra construtos"},
+  {n:"Canhão Casamata",tipo:"arma",cat:"Arma de fogo",z:1050,raro:1,p:"[DES + AST]",d:"[RA + 12] físico",m:2,a:"dist",mr:"arma_cac",desc:"+1 Defesa"},
+  {n:"Calamidade",tipo:"arma",cat:"Arma de fogo",z:1550,raro:1,p:"[DES + AST]",d:"[RA + 16] fogo",m:2,a:"dist",mr:"arma_cac",desc:"multi (2)"},
+  {n:"Chicote Velho",tipo:"arma",cat:"Malho",z:650,raro:1,p:"[DES + DES]",d:"[RA + 8] físico",m:2,a:"cac",mr:null,desc:"+5 contra feras e monstros"},
+  {n:"Nunchaku",tipo:"arma",cat:"Malho",z:1100,raro:1,p:"[DES + VIG]",d:"[RA + 8] físico",m:1,a:"cac",mr:null,desc:"+1 Defesa"},
+  {n:"Lâmina-chicote",tipo:"arma",cat:"Malho",z:1400,raro:1,p:"[DES + VIG] +1",d:"[RA + 12] físico",m:2,a:"cac",mr:"arma_cac",desc:"multi (2)"},
+  {n:"Fio de Seda",tipo:"arma",cat:"Malho",z:1450,raro:1,p:"[DES + DES]",d:"[RA + 12] físico",m:2,a:"cac",mr:"arma_cac",desc:"Resistência a dano físico"},
+  {n:"Jormungand",tipo:"arma",cat:"Malho",z:2400,raro:1,p:"[DES + VIG]",d:"[RA + 12] trevas",m:2,a:"cac",mr:"arma_cac",desc:"multi (3)"},
+  {n:"Berdiche",tipo:"arma",cat:"Pesada",z:350,raro:1,p:"[VIG + VIG] +1",d:"[RA + 14] físico",m:2,a:"cac",mr:"arma_cac"},
+  {n:"Beowulf",tipo:"arma",cat:"Pesada",z:550,raro:1,p:"[VIG + VIG]",d:"[RA + 10] físico",m:1,a:"cac",mr:"arma_cac",desc:"+5 contra monstros"},
+  {n:"Adamantelo",tipo:"arma",cat:"Pesada",z:1050,raro:1,p:"[VIG + VIG]",d:"[RA + 14] físico",m:2,a:"cac",mr:"arma_cac",desc:"+1 Defesa"},
+  {n:"Mjolnir",tipo:"arma",cat:"Pesada",z:1850,raro:1,p:"[VIG + VIG]",d:"[RA + 10] raio",m:1,a:"cac",mr:"arma_cac",desc:"Alvos ficam atordoados"},
+  {n:"Asa Dracônica",tipo:"arma",cat:"Pesada",z:2050,raro:1,p:"[VIG + VIG]",d:"[RA + 18] fogo",m:2,a:"cac",mr:"arma_cac",desc:"Imune a fogo"},
+  {n:"Rocinante",tipo:"arma",cat:"Lança",z:500,raro:1,p:"[DES + VIG]",d:"[RA + 8] físico",m:1,a:"cac",mr:"arma_cac",desc:"+1 de dano por condição"},
+  {n:"Lança Serpentina",tipo:"arma",cat:"Lança",z:800,raro:1,p:"[DES + VIG]",d:"[RA + 16] físico",m:2,a:"cac",mr:"arma_cac",desc:"Dano ignora Resistências"},
+  {n:"Alabarda",tipo:"arma",cat:"Lança",z:1000,raro:1,p:"[DES + VIG]",d:"[RA + 12] físico",m:2,a:"cac",mr:"arma_cac",desc:"+1 Defesa"},
+  {n:"Gae Bolg",tipo:"arma",cat:"Lança",z:1800,raro:1,p:"[DES + VIG] +1",d:"[RA + 12] físico",m:2,a:"cac",mr:"arma_cac",desc:"Sucesso crítico: +10 de dano"},
+  {n:"Gungnir",tipo:"arma",cat:"Lança",z:3000,raro:1,p:"[DES + VIG]",d:"[RA + 16] luz",m:2,a:"cac",mr:"arma_cac",desc:"Imune a fogo e gelo"},
+  {n:"Zweihänder",tipo:"arma",cat:"Espada",z:400,raro:1,p:"[DES + VIG] +1",d:"[RA + 14] físico",m:2,a:"cac",mr:"arma_cac"},
+  {n:"Chuva",tipo:"arma",cat:"Espada",z:450,raro:1,p:"[DES + DES] +1",d:"[RA + 10] gelo",m:2,a:"cac",mr:"arma_cac",desc:"Ataca Def.M"},
+  {n:"Flambérgia",tipo:"arma",cat:"Espada",z:500,raro:1,p:"[DES + VIG] +1",d:"[RA + 10] fogo",m:1,a:"cac",mr:"arma_cac"},
+  {n:"Lâmina Mortal",tipo:"arma",cat:"Espada",z:1000,raro:1,p:"[DES + VIG] +1",d:"[RA + 6] trevas",m:1,a:"cac",mr:"arma_cac",desc:"+5 contra alvos em crise"},
+  {n:"Rikizo",tipo:"arma",cat:"Espada",z:1200,raro:1,p:"[DES + AST] +1",d:"[RA + 10] físico",m:2,a:"cac",mr:"arma_cac",desc:"+2 por classe dominada"},
+  {n:"Kusanagi",tipo:"arma",cat:"Espada",z:1500,raro:1,p:"[DES + VIG] +1",d:"[RA + 14] ar",m:2,a:"cac",mr:"arma_cac",desc:"multi (2)"},
+  {n:"Excalibur",tipo:"arma",cat:"Espada",z:2300,raro:1,p:"[VIG + VON] +1",d:"[RA + 10] luz",m:2,a:"cac",mr:"arma_cac",desc:"Imune a todas as condições"},
+  {n:"Estrela Meteórica",tipo:"arma",cat:"Arremesso",z:350,raro:1,p:"[DES + AST] +1",d:"[RA + 4] fogo",m:1,a:"dist",mr:null},
+  {n:"Bumerangue",tipo:"arma",cat:"Arremesso",z:750,raro:1,p:"[DES + VIG] +1",d:"[RA + 4] físico",m:1,a:"dist",mr:null,desc:"+5 contra feras e monstros"},
+  {n:"Chakram",tipo:"arma",cat:"Arremesso",z:1250,raro:1,p:"[DES + VIG] +1",d:"[RA + 4] físico",m:1,a:"dist",mr:null,desc:"multi (2)"},
+  {n:"Vajra",tipo:"arma",cat:"Arremesso",z:2050,raro:1,p:"[DES + VON] +1",d:"[RA + 8] raio",m:1,a:"dist",mr:"arma_dist",desc:"Alvos ficam abalados"},
+  {n:"Sem armadura",tipo:"armadura",z:0,dF:null,dB:0,dMB:0,ini:0,mr:null},
+  {n:"Camisa de seda",tipo:"armadura",z:100,dF:null,dB:0,dMB:2,ini:-1,mr:null},
+  {n:"Traje de viagem",tipo:"armadura",z:100,dF:null,dB:1,dMB:1,ini:-1,mr:null},
+  {n:"Túnica de combate",tipo:"armadura",z:150,dF:null,dB:1,dMB:1,ini:0,mr:null},
+  {n:"Vestes de sábio",tipo:"armadura",z:200,dF:null,dB:1,dMB:2,ini:-2,mr:null},
+  {n:"Brigantina",tipo:"armadura",z:150,dF:10,dB:0,dMB:0,ini:-2,mr:"armadura"},
+  {n:"Placa de bronze",tipo:"armadura",z:200,dF:11,dB:0,dMB:0,ini:-3,mr:"armadura"},
+  {n:"Placa rúnica",tipo:"armadura",z:250,dF:11,dB:0,dMB:1,ini:-3,mr:"armadura"},
+  {n:"Placa de aço",tipo:"armadura",z:300,dF:12,dB:0,dMB:0,ini:-4,mr:"armadura"},
+  {n:"Traje de raposa",tipo:"armadura",z:650,raro:1,dF:null,dB:1,dMB:1,ini:0,mr:null,desc:"Imune a lento"},
+  {n:"Placa de Cristal",tipo:"armadura",z:900,raro:1,dF:11,dB:0,dMB:0,ini:-3,mr:"armadura",desc:"Resistente a trevas"},
+  {n:"Armadura Heroica",tipo:"armadura",z:1000,raro:1,dF:12,dB:0,dMB:0,ini:-4,mr:"armadura",desc:"Sucesso crítico não gera oportunidade contra você"},
+  {n:"Traje de Arquimago",tipo:"armadura",z:1200,raro:1,dF:null,dB:1,dMB:2,ini:-2,mr:null,desc:"+1 em testes de Magia"},
+  {n:"Yoroi Ardente",tipo:"armadura",z:1300,raro:1,dF:12,dB:0,dMB:0,ini:-4,mr:"armadura",desc:"+1 em testes de Precisão"},
+  {n:"Túnica Preta",tipo:"armadura",z:2200,raro:1,dF:null,dB:1,dMB:2,ini:-2,mr:null,desc:"Feitiços causam +5 de dano"},
+  {n:"Túnica Vermelha",tipo:"armadura",z:2500,raro:1,dF:null,dB:0,dMB:2,ini:-1,mr:null,desc:"Cumpre requisito de arma arcana equipada"},
+  {n:"Escudo de bronze",tipo:"escudo",z:100,dB:2,dMB:0,mr:null},
+  {n:"Escudo rúnico",tipo:"escudo",z:150,dB:2,dMB:2,mr:"escudo"},
+  {n:"Manica de Placas",tipo:"escudo",z:800,raro:1,dB:2,dMB:0,mr:null,desc:"Permite Esquiva sem escudo/armadura marcial"},
+  {n:"Escudo Demoníaco",tipo:"escudo",z:950,raro:1,dB:2,dMB:2,mr:"escudo",desc:"Em crise: atacante fica abalado"},
+  {n:"Escudo da Primavera",tipo:"escudo",z:1150,raro:1,dB:2,dMB:2,mr:"escudo",desc:"+5 PV em qualquer cura"},
+  {n:"Escudo-tampa",tipo:"escudo",z:1500,raro:1,dB:2,dMB:2,mr:"escudo",desc:"+5 dano ao usar iguarias"},
+  {n:"Escudo Seráfico",tipo:"escudo",z:2050,raro:1,dB:2,dMB:2,mr:"escudo",desc:"Em crise: imune a todas as condições"},
+  {n:"Adamantorre",tipo:"escudo",z:2500,raro:1,dB:3,dMB:3,mr:"escudo",desc:"DEF e DEF.M +1 (já incluído)"},
+  {n:"Cinto de Explorador",tipo:"acessorio",z:500,desc:"+4 Iniciativa"},
+  {n:"Luvas Elegantes",tipo:"acessorio",z:500,desc:"Imune a atordoado"},
+  {n:"Luvas Gastas",tipo:"acessorio",z:500,desc:"Imune a fraco"},
+  {n:"Luvas Sedosas",tipo:"acessorio",z:500,desc:"Imune a lento"},
+  {n:"Luvas Quentes",tipo:"acessorio",z:500,desc:"Imune a abalado"},
+  {n:"Pingente Rubi",tipo:"acessorio",z:700,desc:"Resistente a fogo"},
+  {n:"Pingente Safira",tipo:"acessorio",z:700,desc:"Resistente a gelo"},
+  {n:"Pingente Topázio",tipo:"acessorio",z:700,desc:"Resistente a raio"},
+  {n:"Pingente Esmeralda",tipo:"acessorio",z:700,desc:"Resistente a veneno"},
+  {n:"Pingente Diamante",tipo:"acessorio",z:700,desc:"Resistente a luz"},
+  {n:"Pingente Ametista",tipo:"acessorio",z:700,desc:"Resistente a trevas"},
+  {n:"Pingente Opala",tipo:"acessorio",z:700,desc:"Resistente a ar"},
+  {n:"Pingente Âmbar",tipo:"acessorio",z:700,desc:"Resistente a terra"},
+  {n:"Anel de Feitiçaria",tipo:"acessorio",z:800,desc:"+1 Def.M"},
+  {n:"Botas de Vagante",tipo:"acessorio",z:900,desc:"+1 PF ao descobrir em viagem"},
+  {n:"Elmo de crista",tipo:"acessorio",z:1000,desc:"+1 em testes de Precisão"},
+  {n:"Luvas Carmesins",tipo:"acessorio",z:1000,desc:"+2 em Precisão com multi"},
+  {n:"Chapéu Pontudo Amarelo",tipo:"acessorio",z:1000,desc:"+1 em testes de Magia"},
+  {n:"Anel do Leão",tipo:"acessorio",z:1500,desc:"+2 em opostos com Vontade"},
+  {n:"Anel da Coruja",tipo:"acessorio",z:1500,desc:"+2 em opostos com Astúcia"},
+  {n:"Anel do Pupilo",tipo:"acessorio",z:1500,desc:"+1 DEF/DEF.M com 2+ Laços de admiração"},
+  {n:"Anel de Contos",tipo:"acessorio",z:1500,desc:"Sucesso crítico → 1 Ponto de Fábula"},
+  {n:"Luvas de Pele Multicamada",tipo:"acessorio",z:2000,desc:"Imune a todas as condições"},
+  {n:"Anel de Cebolas",tipo:"acessorio",z:2000,desc:"+2 PV e PM por classe"},
+  {n:"Anel de Gelo",tipo:"acessorio",z:2500,desc:"Absorve gelo, Vulnerável a fogo"},
+  {n:"Anel de Magma",tipo:"acessorio",z:2500,desc:"Absorve fogo, Vulnerável a gelo"},
+  {n:"Anel do Ovo",tipo:"acessorio",z:3000,desc:"1× até descansar: 1 PV em vez de 0"}
+];
+
+const MARCIAL_LABEL={arma_cac:"Armas corpo a corpo",arma_dist:"Armas à distância",armadura:"Armaduras",escudo:"Escudos"};
+
+/* =========================================================================
+   ARCANOS
+   ========================================================================= */
+const ARCANOS=[
+  {n:"Arcano da Espada",dom:"conquista, heroísmo, liderança",f:"Seus ataques causam 5 de dano adicional e todo dano causado por seus ataques perde seu tipo e não pode receber um tipo enquanto fundido (portanto, não são afetados por Afinidades). Ao fazer um ataque, pode conceder a propriedade multi (qualquer quantidade de alvos). Se fizer isso, o Arcano é dispensado automaticamente após o ataque.",d:"—"},
+  {n:"Arcano da Forja",dom:"calor, fogo, metal",f:"Você tem Resistência a dano de fogo. Todo dano de fogo causado por você ignora Resistências.",d:"Escolha Forja (cria arma/armadura/escudo básicos; item anterior desaparece) ou Inferno (causa 30 de dano de fogo em qualquer número de criaturas visíveis, ignora Resistências)."},
+  {n:"Arcano da Geada",dom:"frio, gelo, silêncio",f:"Você tem Resistência a dano de gelo e é imune a enfurecido. Todo dano de gelo causado por você ignora Resistências.",d:"Era do Gelo: causa 30 de dano de gelo em qualquer número de criaturas visíveis (ignora Resistências)."},
+  {n:"Arcano da Roda",dom:"destino, tempo, velocidade",f:"Você é imune a lento. Sua Defesa aumenta em +1.",d:"Congelar o Tempo: criaturas visíveis ficam lentas. Se já estava lenta, faz uma ação a menos no próximo turno (mín. 0)."},
+  {n:"Arcano da Torre",dom:"julgamento, proteção, sacrifício",f:"Ao invocar, escolha um tipo de dano (ar, fogo, gelo, raio, terra ou trevas). Até dispensar, cada aliado em cena tem Resistência ao tipo escolhido (você não recebe).",d:"Julgamento: causa 30 de dano de luz em qualquer número de criaturas visíveis (ignora Resistências)."},
+  {n:"Arcano do Carvalho",dom:"plantas, terra, veneno",f:"Resistência a dano de terra e veneno; imune a envenenado. Sempre que recupera PV, recupera 5 PV adicionais.",d:"Florescer: criaturas visíveis (inclusive você) perdem envenenado e recuperam 40 PV (50 em nível 20+, 60 em 40+)."},
+  {n:"Arcano do Céu",dom:"chuva, névoa, tempestades",f:"Resistência a dano de ar e raio. Pode usar uma ação para descobrir o clima do próximo dia em um raio de 2 dias de Viagem.",d:"Tempestade: causa 30 de dano de raio em qualquer número de criaturas visíveis (ignora Resistências)."},
+  {n:"Arcano do Grimório",dom:"compreensão, conhecimento, revelações",f:"Você lê, escreve, fala e entende todos os idiomas. Seu dado de Astúcia é considerado um passo maior (máx d12).",d:"Oráculo: faça uma pergunta ao mestre; ele responde com sinceridade. Volta a ficar disponível na manhã seguinte e não pode repetir pergunta."},
+  {n:"Arcano do Portão",dom:"espaço, vazio, viagens",f:"Resistência a dano de trevas. Sua Defesa Mágica aumenta em +1.",d:"Escolha Oblívio (30 de dano de trevas em criaturas visíveis, ignora Resistências) ou Translocar (você e até 5 criaturas voluntárias vão para local visitado em até 1 dia de Viagem)."},
+  {n:"Anhangá",dom:"animais, florestas, proteção",f:"Resistência a dano causado por ataques à distância. 1× por rodada em conflito, quando sofre ataque à distância: 10 PM para defletir ([DES + AST] oposto ao teste de Precisão do atacante). Se vencer, não sofre dano; em crítico, pode devolver metade do dano.",d:"Olhos de Fogo: escolha você ou um aliado visível; alvo fica imune a dano causado por ataques à distância durante uma rodada."},
+  {n:"Airmid",dom:"cura, exorcismo, plantas",f:"Ao invocar, recebe 3 Pontos de Remédio (perdidos ao dispersar). Em conflito, 1× por turno: ação + 1 Ponto de Remédio para aliado visível recuperar PV igual ao seu valor de crise e recuperar uma condição.",d:"Raízes Purificadoras: se tinha Pontos de Remédio, 20 de dano de terra em inimigos na cena; se não tinha, 30. Inimigos que perderem PV e estiverem sob feitiços de 'Cena' têm esses feitiços encerrados."},
+  {n:"Baihu",dom:"feras, metal, vento",f:"Ao causar dano, pode mudar o tipo para ar ou físico. Se dano for ar/físico e Defesa ≥ 12: 5 de dano adicional e o dano ignora Resistências.",d:"Vento e Aço: 30 de dano de ar em inimigos na cena; OU até fim da cena, você e aliados podem usar Defesa 12 (13 em nível 20+, 14 em 40+; usa o próprio se for maior)."},
+  {n:"Dâmocles",dom:"hesitação, pavor, punição",f:"Resistência a dano de luz e trevas. 1× por turno em conflito: ação para escolher inimigo visível e uma ação (Ataque, Feitiço, Guarda ou Objetivo). Até seu próximo turno, o inimigo perde 10 PV cada vez que fizer a ação escolhida (20 em nível 30+).",d:"Chuva de Espadas: 30 de dano de luz em todos os inimigos presentes na cena. Cada criatura que perder PV fica abalada."},
+  {n:"Fafnir",dom:"fogo, proteção, riqueza",f:"Resistência a dano de fogo. Enquanto não estiver em crise: também Resistência a físico. Todo dano causado vira fogo (não muda) e ignora Resistências; em crise, também ignora Imunidades. Feitiço de alvo único: +10 de dano.",d:"Ouro Derretido: se não em crise, 20 de dano de fogo (ignora Imunidades/Resistências) em cada inimigo na cena; se em crise, 30. Você e aliados recuperam 2 PI por inimigo reduzido a 0 PV."},
+  {n:"Huginn e Muninn",dom:"conhecimento, memória, tempestades",f:"Resistência a dano de ar e raio; imune a atordoado. Fim do seu turno: escolha criatura visível; mestre revela um Traço dela OU a Afinidade a um tipo de dano à sua escolha.",d:"Gêmeos Nascidos na Tempestade: escolha ar ou raio; 20 de dano do tipo em criatura visível; em seguida, 20 do outro tipo em outra criatura visível. Ignora Resistências; ignora Imunidades se você conhece 2+ Traços da criatura."},
+  {n:"Lady Higabana",dom:"isolamento, melancolia, morte",f:"Se tiver Contra-ataque, ele também se aplica a ataques à distância. Em conflito, enquanto fundido e fora do seu turno: seus ataques causam 5 de dano adicional (10 em crise).",d:"Mortalha Sepulcral: 40 de dano de trevas em criatura visível (ignora Imunidades/Resistências). Se perder PV, não pode recuperar PV até o início do próximo turno dela."},
+  {n:"Maneki-neko",dom:"coincidências, eventos imprevistos, prosperidade",f:"Ao fazer teste de Magia/Precisão: escolha um dos valores; vira seu número miágico (substitui o anterior). Após criatura visível fazer um teste: gasta o número para substituir um dado. Não pode gerar número em testes onde usou o efeito.",d:"Cascata de Moedas: 30 de dano físico em inimigos na cena. Se perdeu número miágico: tipo vira ar(1/6), raio(2/7), fogo(3/8), gelo(4/9), terra(5/10) ou trevas (11+)."},
+  {n:"Marchosias",dom:"fogo, lealdade, vigor",f:"Imune a abalado e fraco. 1× por turno em conflito: ação para causar [10 + (2 × nº de poderes heroicos)] de dano físico em até 2 inimigos visíveis. Se pelo menos um perder PV: +1 Ponto de Glifo. Perdidos ao dispersar.",d:"Selo de Fogo: 30 de dano de fogo em inimigo visível (ignora Imunidades/Resistências). Se perdeu 3+ Pontos de Glifo: +10 de dano OU atinge até 2 inimigos."},
+  {n:"Rangda",dom:"bruxaria, medicina, veneno",f:"Após você/aliados visíveis perderem PV: +1 Ponto de Feitiçaria. Todo dano causado vira veneno (não muda) e você causa dano adicional igual aos Pontos de Feitiçaria atuais. Perdidos ao dispersar.",d:"Banquete de Corpo e Alma: dano de veneno igual a [5 × Pontos de Feitiçaria perdidos] em inimigo visível. Se reduzir a 0 PV: você e aliados visíveis recuperam PV e PM iguais ao valor de crise do inimigo."},
+  {n:"Rondolo",dom:"augúrio, presságios, tempestades",f:"Resistência a dano de luz e raio. 1× por cena, em seu turno: ação + 10 PM para lançar Raio (ainda paga PM do feitiço).",d:"Ventania das Tempestades: 20 de dano de raio em todos os inimigos na cena (ignora Resistências); OU até fim da cena, você e aliados ficam imunes a abalado."},
+  {n:"Tiamat",dom:"água salgada, caos, serpentes",f:"Resistência a gelo. Ao causar dano de gelo: 5 de dano adicional e ignora Resistências. 1× por turno em conflito: ação para ataque livre. Se fizer isso, o dano vira gelo (não muda) e criaturas atingidas ficam lentas.",d:"Mares de um Oceano Infinito: preenche 2 seções de cada relógio na cena; OU apaga 2 seções; OU força soldados em crise (não vilões) a deixarem a cena. Fica indisponível até o próximo amanhecer após o uso."}
+];
+
+/* =========================================================================
+   CLASSES
+   ========================================================================= */
+const FABULA={classes:{
+  "Andarilho":{b:{pi:2},m:[],r:[],h:[{n:"Caçador de Tesouros",m:1},{n:"Companheiro Fiel",m:5},{n:"Papo de Taverna",m:5},{n:"Prático",m:5},{n:"Viajante Experiente",m:1}]},
+  "Arcanista":{b:{pm:5},m:[],r:[],h:[{n:"Arcanismo Ritualista",m:1},{n:"Arcano Emergencial",m:5},{n:"Círculo Arcano",m:1},{n:"Regeneração Arcana",m:5},{n:"Vincular e Invocar",m:1}]},
+  "Atirador":{b:{pv:5},m:["arma_dist","escudo"],r:[],h:[{n:"Barragem",m:1},{n:"Fogo Cruzado",m:1},{n:"Maestria com Armas à Distância",m:5},{n:"Olhos de Águia",m:5},{n:"Tiro de Aviso",m:5}]},
+  "Elementalista":{b:{pm:5},m:[],r:["Ritualismo"],h:[{n:"Artilharia Mágica",m:5},{n:"Cataclismo",m:5},{n:"Elementalismo Ritualista",m:1},{n:"Lâmina Mágica",m:5},{n:"Magia Elemental",m:10,g:"Elementalista"}]},
+  "Entropista":{b:{pm:5},m:[],r:["Ritualismo"],h:[{n:"Absorver PM",m:5},{n:"Entropismo Ritualista",m:1},{n:"Magia Entrópica",m:10,g:"Entropista"},{n:"Sete da Sorte",m:1},{n:"Tempo Roubado",m:4}]},
+  "Erudito":{b:{pm:5},m:[],r:[],h:[{n:"Análise Rápida",m:5},{n:"Concentrado",m:5},{n:"Conhecimento é Poder",m:1},{n:"Lampejo de Saber",m:5},{n:"Memória Treinada",m:1}]},
+  "Espiritualista":{b:{pm:5},m:[],r:["Ritualismo"],h:[{n:"Espiritualismo Ritualista",m:1},{n:"Magia de Suporte",m:1},{n:"Magia Espiritual",m:10,g:"Espiritualista"},{n:"Poder Curativo",m:2},{n:"Vismagus",m:1}]},
+  "Furioso":{b:{pv:5},m:["arma_cac","armadura"],r:[],h:[{n:"Adrenalina",m:5},{n:"Espírito Indomável",m:4},{n:"Frenesi",m:1},{n:"Provocar",m:5},{n:"Resistir",m:5}]},
+  "Guerreiro Sombrio":{b:{pv:5},m:["arma_cac","armadura"],r:[],h:[{n:"Agonia",m:5},{n:"Coração da Escuridão",m:1},{n:"Golpe das Sombras",m:5},{n:"Lição Dolorosa",m:3},{n:"Sangue das Trevas",m:1}]},
+  "Guardião":{b:{pv:5},m:["armadura","escudo"],r:[],h:[{n:"Duplo Escudeiro",m:1},{n:"Fortaleza",m:5},{n:"Guarda-costas",m:1},{n:"Maestria Defensiva",m:5},{n:"Proteger",m:1}]},
+  "Inventor":{b:{pi:2},m:[],r:[],h:[{n:"Chuva de Poções",m:2},{n:"Engenhocas",m:5},{n:"Fórmula Secreta",m:5},{n:"Item Emergencial",m:1},{n:"Visionário",m:5}]},
+  "Ladino":{b:{pi:2},m:[],r:[],h:[{n:"Alta Velocidade",m:3},{n:"Esquiva",m:3},{n:"Golpe Baixo",m:5},{n:"Roubo de Alma",m:5},{n:"Vejo Você Mais Tarde",m:1}]},
+  "Mestre de Armas":{b:{pv:5},m:["arma_cac","escudo"],r:[],h:[{n:"Chuva de Lâminas",m:1},{n:"Contra-ataque",m:1},{n:"Quebra-ossos",m:4},{n:"Maestria com Armas Corpo a Corpo",m:4},{n:"Trespassar",m:3}]},
+  "Orador":{b:{pm:5},m:[],r:[],h:[{n:"Aliado Inesperado",m:1},{n:"Condenar",m:4},{n:"Confio em Você",m:2},{n:"Encorajar",m:6},{n:"Persuasivo",m:2}]},
+  "Quimerista":{b:{pm:5},m:[],r:["Ritualismo"],h:[{n:"Consumir",m:5},{n:"Imitação Mágica",m:10,t:"texto",tOffset:2},{n:"Língua das Feras",m:1},{n:"Patogênese",m:1},{n:"Quimerismo Ritualista",m:1}]},
+  "Comandante":{b:{pv:5},m:["arma_cac","arma_dist"],r:[],h:[{n:"Carga de Cavalaria",m:4},{n:"Carruagem Devastadora",m:1},{n:"Decreto do Bispo",m:1},{n:"Gambito da Dama",m:1},{n:"Roque do Rei",m:1}]},
+  "Dançarino":{b:{escolha:"pvpm",valor:5},m:[],r:[],h:[{n:"Dança",m:10},{n:"Dançarino de Guerra",m:1},{n:"Me Acompanhe",m:1},{n:"Sapateado Frenético",m:1},{n:"Troca de Figurino",m:1}]},
+  "Simbolista":{b:{pi:2},m:[],r:[],h:[{n:"Conexão Simbólica",m:1},{n:"Miragem",m:1},{n:"Simbolismo",m:5},{n:"Símbolos Mágicos",m:3},{n:"Toque Pessoal",m:5}]},
+  "Virtuoso":{b:{pm:5},m:[],r:[],h:[{n:"Barreira Sonora",m:5},{n:"Canto da Sereia",m:1},{n:"Harmonia",m:1},{n:"Magicanto",m:5},{n:"Vibrato",m:1}]},
+  "Floralista":{b:{escolha:"pvpm",valor:5},m:[],r:[],h:[{n:"Árvore da Vida",m:5},{n:"Cloromancia",m:10},{n:"Enxerto",m:1},{n:"Influência Verdejante",m:1},{n:"Jardinagem Marcial",m:3}]},
+  "Gourmet":{b:{pi:2},m:[],r:[],h:[{n:"Cozinheiro Viajante",m:1},{n:"Culinária",m:5},{n:"Feito com Amor",m:5},{n:"Garfo e Faca",m:1},{n:"Sal e Pimenta",m:1}]},
+  "Invocador":{b:{escolha:"pvpm",valor:5},m:[],r:["Ritualismo"],h:[{n:"Cascata",m:1},{n:"Expandir Manancial",m:1},{n:"Harmonia Elemental",m:1},{n:"Invocação",m:3},{n:"Invocações Conectadas",m:5}]},
+  "Mercador":{b:{pi:2},m:[],r:[],h:[{n:"Data de Validade",m:1},{n:"Estoque Pessoal",m:5},{n:"Já Ouvi Falar",m:5},{n:"Ventos do Comércio",m:3},{n:"Verdadeiro Tesouro",m:3}]},
+  "Astrólogo":{b:{pm:5},m:[],r:[],h:[{n:"Constelação do Biotatá",m:1},{n:"Constelação do Boto",m:1},{n:"Constelação do Cão Dourado",m:1},{n:"Constelação da Rasga-mortalha",m:1},{n:"Constelação do Saci",m:1}]},
+  "Bandoleiro":{b:{pi:2},m:["arma_cac","arma_dist"],r:[],h:[{n:"Cabra da Peste",m:1},{n:"Líder de Bando",m:1},{n:"Redistribuir Riquezas",m:1},{n:"Sertanejo",m:1},{n:"Valhacouto",m:1}]},
+  "Carteador":{b:{escolha:"pvpm",valor:5},m:[],r:[],h:[{n:"Altos e Baixos",m:1},{n:"Carta Armadilha",m:5},{n:"Cartas Mágicas",m:5},{n:"Dobro ou Nada",m:1},{n:"Mulligan",m:1}]},
+  "Cavaleiro Mágico":{b:{pm:5},m:["armadura","escudo"],r:[],h:[{n:"Alma Ferida",m:1},{n:"Coração Ardente",m:1},{n:"Impulso do Coração",m:1},{n:"Magitransformação",m:10},{n:"Transformação Aprimorada",m:5}]},
+  "Forjador de Almas":{b:{pi:2},m:[],r:[],h:[{n:"Animar Arma",m:1},{n:"Coletar Almas",m:5},{n:"Forjar Característica",m:1},{n:"Forjar Feitiço",m:1},{n:"Manifestar Arma",m:1}]},
+  "Lâmina Carmesim":{b:{pv:5},m:["arma_cac","escudo"],r:[],h:[{n:"Arsenal Vermelho",m:1},{n:"Dobrar Sangue",m:1},{n:"Escudo Escarlate",m:5},{n:"Frenesi Sanguinolento",m:5},{n:"Hemofagia",m:5}]},
+  "Malandro":{b:{pi:2},m:["arma_dist"],r:[],h:[{n:"Engabelar",m:5},{n:"Explorar Fraqueza",m:1},{n:"Gambiarra",m:1},{n:"Golpe Aproveitador",m:1},{n:"Jeitinho",m:5}]},
+  "Necromante":{b:{escolha:"pvpm",valor:5},m:[],r:[],h:[{n:"Além do Reino da Morte",m:5},{n:"Filhos da Sepultura",m:1},{n:"Medo é a Chave",m:5},{n:"Por Quem os Sinos Dobram",m:5},{n:"Rondó do Pesadelo",m:1}]}
+},magias:{
+  "Elementalista":["Arma Elemental","Clarão","Fulgur","Glacies","Golpe de Sobrevoo","Iceberg","Ignis","Mortalha Elemental","Pedregulho","Raio","Terra","Ventus","Vórtice"],
+  "Entropista":["Aceleração","Anomalia","Apostar","Arma das Trevas","Dissipar","Drenar Espírito","Drenar Vigor","Divinação","Espelhar","Parar","Umbra","Ômega"],
+  "Espiritualista":["Alucinação","Arma Espiritual","Aura","Barreira","Bastião Espiritual","Curar","Despertar","Enfurecer","Lux","Piedade","Purificar","Reforçar","Torpor"]
+}};
+
+/* =========================================================================
+   DESCRIÇÕES DE HABILIDADES
+   ========================================================================= */
+const HAB_DESC={
+  "Andarilho":{"Caçador de Tesouros":"Faz descoberta com (NP + 1) ou menos no teste de Viagem.","Companheiro Fiel":"Ganha NPC nível 5 (construto, elemental, fera ou planta). PV = NP × VIG + metade do nível. Bônus de NP em testes.","Papo de Taverna":"Descansando em estalagem, faz NP perguntas sobre a região.","Prático":"Recupera NP PI após cada teste de Viagem.","Viajante Experiente":"Reduz o dado rolado em testes de Viagem em um passo (mín. d6)."},
+  "Arcanista":{"Arcanismo Ritualista":"Faz rituais de arcanismo ligados aos domínios dos Arcanos vinculados. [VON + VON].","Arcano Emergencial":"Em crise, custo de invocar Arcano reduzido em NP × 5 PM.","Círculo Arcano":"Após dispensar Arcano, ação Feitiço grátis (arma arcana; custo ≤ NP × 5 PM).","Regeneração Arcana":"Ao invocar Arcano, recupera NP × 5 PV.","Vincular e Invocar":"Vincula Arcanos e gasta 40 PM para invocá-los. Começa com um vinculado."},
+  "Atirador":{"Barragem":"10 PM: ataque à distância ganha multi(2) ou aumenta em 1 (máx multi 3).","Fogo Cruzado":"Interrompe ataque à distância inimigo pagando 5 + resultado do teste de Precisão do alvo.","Maestria com Armas à Distância":"+NP em testes de Precisão à distância.","Olhos de Águia":"Na Guarda sem cobertura: +NP × 3 dano no próximo ataque OU ataque livre com arco/arma de fogo.","Tiro de Aviso":"Não causa dano. Alvos ficam abalados, lentos, ou perdem NP × 10 PM."},
+  "Elementalista":{"Artilharia Mágica":"Com arma arcana: +NP × 2 em testes de Magia ofensivos.","Cataclismo":"Com arma arcana: aumenta custo em até NP × 10 PM para +5 dano por 10 PM.","Elementalismo Ritualista":"Faz rituais de elementalismo. [AST + VON].","Lâmina Mágica":"Feitiço ofensivo (custo ≤ NP × 20, alvo único) usa fórmula de precisão da arma equipada.","Magia Elemental":"Aprende um feitiço de Elementalista por ponto investido."},
+  "Entropista":{"Absorver PM":"Após sofrer dano, recupera NP × 2 PM.","Entropismo Ritualista":"Faz rituais de entropismo. [AST + VON].","Magia Entrópica":"Aprende um feitiço de Entropista por ponto investido.","Sete da Sorte":"1× por cena: substitui um dado por 7. Valor substituído vira o novo número da sorte.","Tempo Roubado":"Gasta até NP × 5 PM para: lento / remover lento / Equipamento grátis / dano a lento / turno extra para aliado."},
+  "Erudito":{"Análise Rápida":"Início do conflito: até NP × 5 PM para revelar Traços ou Afinidades de criaturas.","Concentrado":"+NP × 3 PM máximos. +NP em testes abertos [AST + AST].","Conhecimento é Poder":"Substitui um dado de Atributo por Astúcia em testes de Precisão.","Lampejo de Saber":"Ao tirar 13+: até NP perguntas ao mestre (uma vez por alvo).","Memória Treinada":"Lembra com perfeição de qualquer cena da última semana."},
+  "Espiritualista":{"Espiritualismo Ritualista":"Faz rituais de espiritualismo. [AST + VON].","Magia de Suporte":"Com arma arcana: aliado com Laço ganha +força do Laço no próximo teste da cena.","Magia Espiritual":"Aprende um feitiço de Espiritualista por ponto investido.","Poder Curativo":"Com arma arcana: cada aliado de um feitiço recupera [3 + (NP × nº de Laços)] PV.","Vismagus":"Sem PM: gasta [10 + custo] PV para lançar. Não recupera PV do próprio feitiço."},
+  "Furioso":{"Adrenalina":"Em crise: NP × 2 de dano adicional (qualquer fonte).","Espírito Indomável":"Ao gastar Ponto de Fábula: +NP × 5 PV, +NP × 5 PM, ou cura uma condição.","Frenesi":"Com adaga, luta, malho ou arremesso: sucesso crítico sempre que ambos os dados mostram o mesmo número.","Provocar":"Ação + 5 PM: teste oposto [VIG + VON]. Alvo enfurecido e focado em você.","Resistir":"Na Guarda sem cobrir aliado: recupera NP × maior Laço PV; aumenta VIG ou VON em um passo."},
+  "Guerreiro Sombrio":{"Agonia":"1× por turno, ao causar dano a inimigo com Laço: recupera NP × 2 PV e PM.","Coração da Escuridão":"1× por cena, ao entrar em crise: cria Laço de ódio com criatura visível.","Golpe das Sombras":"Ação: rola dado de VIG, perde esse PV. Se não zerar: ataca com dano de trevas + (NP + resultado).","Lição Dolorosa":"Após sofrer dano: ação Estudo imediata contra a fonte, com bônus NP.","Sangue das Trevas":"Em crise: Resistência a trevas e veneno."},
+  "Guardião":{"Duplo Escudeiro":"Equipa escudo na mão dominante. Dois escudos viram arma [VIG + VIG] [RA + 5] + NP Maestria.","Fortaleza":"+NP × 3 PV máximos.","Guarda-costas":"Na Guarda cobrindo aliado: alvo fica Resistente a tudo até seu próximo turno.","Maestria Defensiva":"Com escudo ou armadura marcial: reduz em NP todo dano sofrido (antes de Afinidades).","Proteger":"Toma o lugar de criatura ameaçada. Pode declarar antes ou depois dos testes."},
+  "Inventor":{"Chuva de Poções":"Poções de cura de alvo único afetam até NP criaturas adicionais (metade da cura).","Engenhocas":"Escolhe tipo: alquimia, infusões ou tecnomagia. Progride básico → avançado → superior.","Fórmula Secreta":"Poções/magisferas de PV/PM curam +NP × 5. Itens de dano causam +NP.","Item Emergencial":"1× por cena, em crise: ação Inventário adicional no turno.","Visionário":"Projetos: até NP × 100 zênites pagos automaticamente; +NP progresso por dia."},
+  "Ladino":{"Alta Velocidade":"Início do conflito + 10 PM: ataque livre OU Impedimento/Objetivo antes da 1ª rodada, com bônus NP.","Esquiva":"Sem escudo/armadura marcial: +NP Defesa.","Golpe Baixo":"Ataque de alvo único que sofre condição: +NP + (nº de condições) de dano.","Roubo de Alma":"Ação: [DES + VON] vs Def.M. Soldado → NP PI. Elite/campeão → rouba tesouro da alma (1× por criatura).","Vejo Você Mais Tarde":"Ação + 1 Ponto de Fábula: some da cena, reaparece em outra."},
+  "Mestre de Armas":{"Chuva de Lâminas":"10 PM: ataque corpo a corpo ganha multi(2) ou aumenta em 1 (máx multi 3).","Contra-ataque":"Inimigo faz ataque corpo a corpo com resultado par: ataque livre com RA 0.","Quebra-ossos":"Ataque sem dano: alvo atordoado, fraco, ou perde NP × 10 PM.","Maestria com Armas Corpo a Corpo":"+NP em testes de Precisão corpo a corpo.","Trespassar":"Ação + 5 PM: ataque livre (alvo único) sem dano. Destrói escudo, destrói armadura, ou +NP × 2 de dano ao alvo até seu próximo turno."},
+  "Orador":{"Aliado Inesperado":"Ação + 1 PF: criatura não-hostil capaz de ouvir fica solícita.","Condenar":"Ação + 5 PM: oposto [AST + VON]. Alvo perde NP × 10 PM, abalado ou atordoado, +NP dano contra ele.","Confio em Você":"Outro PJ faz teste: 1 PF para evocar Traço/Laço dele. Se tem Laço: +NP × 10 PM.","Encorajar":"Ação + 5 PM: aliado recupera NP × 5 PV e aumenta um dado até seu próximo turno.","Persuasivo":"Teste de relógio com charme: até NP × 20 PM para +1 seção a cada 20 PM."},
+  "Quimerista":{"Consumir":"Ao causar dano com feitiço e ter adaga, arcana ou malho: recupera NP × 2 PM.","Imitação Mágica":"Aprende feitiço de fera/monstro/planta. Limite NP + 2. Escolhe [AST + VON] ou [VIG + VON].","Língua das Feras":"Comunica-se com criaturas fera, monstro e planta.","Patogênese":"Feitiços de Quimerista envenenam alvos da mesma espécie da criatura original.","Quimerismo Ritualista":"Faz rituais de quimerismo. Escolhe [AST + VON] ou [VIG + VON]."},
+  "Comandante":{"Carga de Cavalaria":"Ação + 10 PM: aliado faz ataque livre (bônus NP em precisão, RA 0).","Carruagem Devastadora":"Após Decreto/Carga/Roque: outro PJ que ainda não agiu faz turno imediatamente após o seu.","Decreto do Bispo":"Ação + 10 PM: custos em PM dobrados OU todas as fontes causam NP × 3 de dano adicional.","Gambito da Dama":"Ação: ataque livre com RA 0. Depois: usa um poder de Comandante sem gastar ação (pagando PM) OU aliado recupera 5 + NP × 5 PV.","Roque do Rei":"Ação + 10 PM: nenhuma criatura recupera PV/PM, OU todos restauram +NP × 5 PM. Dura até seu próximo turno."},
+  "Dançarino":{"Dança":"Aprende uma dança. Em seu turno, sem armadura marcial: 10 PM para apresentar (sem gastar ação). Custo reduzido se apresentou outra no turno anterior.","Dançarino de Guerra":"Após dançar: ataques com adaga/arremesso/luta/malho causam +NP de dano até início do próximo turno. Arma arcana: feitiços ofensivos também +NP.","Me Acompanhe":"Após dançar (duração 'até próximo turno'): 10 PM. Aliado com Laço de afeto recebe os benefícios também.","Sapateado Frenético":"Após dançar: testes opostos de acrobacia/coordenação/velocidade ganham +NP × 2.","Troca de Figurino":"Após dançar: ação Equipamento sem gastar ação."},
+  "Simbolista":{"Conexão Simbólica":"Sabe a direção exata de qualquer criatura com seu símbolo (até 2 dias de viagem).","Miragem":"Faz rituais de ritualismo; também para criar ilusões visuais.","Simbolismo":"Aprende dois símbolos. Máx NP+1 ativos. Ação Inventário + 2 PI: aplica em si, em aliado, ou via ataque livre em inimigos.","Símbolos Mágicos":"Aliado com símbolo pode fazer Feitiço para destruí-lo e lançar feitiço conhecido (custo ≤ NP × 10 PM).","Toque Pessoal":"Criatura com seu símbolo sofre/recupera PV/PM: você causa +NP de dano ou +NP PV/PM."},
+  "Virtuoso":{"Barreira Sonora":"Após verso em volume médio/forte: dano físico sofrido é reduzido em NP até seu próximo turno.","Canto da Sereia":"Faz rituais de ritualismo; também para criar ilusões sonoras.","Harmonia":"Após afetar inimigos com verso, com arma arcana: aliados causam +NP de dano a eles; OU você recupera NP PM a cada dano sofrido por eles.","Magicanto":"Ação em conflito: gasta PM para tecer verso. Aprende todos os três volumes, uma escala e um tom.","Vibrato":"Após verso em volume fraco/médio: ataque livre com arma equipada, RA = 0."},
+  "Floralista":{"Árvore da Vida":"Ao remover magissemente do jardim: escolhe criatura visível. Se em crise: recupera [5 + (NP × 5)] PV.","Cloromancia":"Aprende um tipo de magissemente da lista. Em conflito, se não houver magissemente: 20 PM para plantar uma.","Enxerto":"Com magissemente no jardim e 1+ seções do relógio de germinação preenchidas: ação para remover e plantar outra.","Influência Verdejante":"Faz rituais de ritualismo; também para criar, animar ou controlar vegetação, pólen, esporos e toxinas.","Jardinagem Marcial":"Após plantar magissemente (mas não Enxerto): ataque livre com arma equipada; OU Feitiço sem ação (custo ≤ 5 + NP × 5 PM)."},
+  "Gourmet":{"Cozinheiro Viajante":"Após cada rolagem de viagem, se tiver Culinária: recebe NP × 2 ingredientes.","Culinária":"Ao descansar em assentamento: recebe NP ingredientes. Ação: combina 2-3 ingredientes para criar iguaria (aplica em você + aliado, OU ataque livre aplicando em inimigos atingidos).","Feito com Amor":"Ao usar Culinária em si/aliado: gasta até NP × 10 PM. A cada 10 PM, aplica a iguaria em um aliado adicional.","Garfo e Faca":"Ao usar Culinária em ataque livre com 2 ingredientes: causa dano normalmente (RA = 0).","Sal e Pimenta":"Ao preparar iguaria: gasta 2 PI para mudar o sabor de um ingrediente."},
+  "Invocador":{"Cascata":"Após inimigo perder PV por dano de aliado com invocação 'Praga': ataque livre com bônus NP. Se atingir: dano do mesmo tipo e todas as 'Praga' no alvo se dissipam.","Expandir Manancial":"Com arco, arcana, arremesso, luta, espada ou mangual: invocações 'explosão' causam +NP de dano; 'praga' também.","Harmonia Elemental":"Comunica-se com elementais. Ao curar, se houver elemental na cena: +NP × 5 PV adicionais.","Invocação":"Ação + 5 PM: acessa manancial da cena. NP determina invocações (1=explosão, 2=+praga, 3=todas).","Invocações Conectadas":"Ao invocar: gasta até NP × 10 PM. A cada 10 PM: criatura adicional como alvo."},
+  "Mercador":{"Data de Validade":"Poção ou iguaria de cura pode, em vez de curar, causar dano de veneno igual a [metade do nível + (NP × 10)] a cada criatura.","Estoque Pessoal":"Quando você/outro PJ gasta NP+2 ou menos PI: gasta 1 Ponto de Comércio para ignorar o custo.","Já Ouvi Falar":"Teste para examinar criatura/item/local: 1 Ponto de Comércio para +NP+2.","Ventos do Comércio":"Após descansar em área comercial: recebe NP+1 Pontos de Comércio. Máx NP+3. Fora de conflito: 2 PC para criar item raro/material (≤ nível × 30z) ou NPC.","Verdadeiro Tesouro":"1× por sessão, ao ajudar NPC/comunidade: recebe NP+1 Pontos de Comércio."},
+  "Astrólogo":{"Constelação do Biotatá":"Ação + 5 PM: [AST + VON] vs Def.M. Acerto: NP × 10 dano de fogo. Consome carga celeste: criatura visível fica Resistente a fogo até fim da cena. Gera NP cargas solares.","Constelação do Boto":"Ação + 5 PM: alinha astros de aliado. Até fim da cena, pode trocar atributo por AST ou VON. Consome carga solar: +1 no teste. Gera NP cargas estelares.","Constelação do Cão Dourado":"Ação + 10 PM: amaldiçoa inimigo. Até próximo turno: dano de luz causa +NP. Consome carga estelar: ignora Imunidades/Resistências. Gera NP cargas meteóricas.","Constelação da Rasga-mortalha":"Faz rituais de ritualismo; também para consultar as estrelas, obter conhecimento de lendas e realizar pequenos desejos.","Constelação do Saci":"Ação + 10 PM: acelera aliado. No próximo turno dele: Equipamento, Guarda, Estudo ou Objetivo sem gastar ação. Consome carga meteórica: +ataque livre (RA 0). Gera NP cargas celestes."},
+  "Bandoleiro":{"Cabra da Peste":"1× por cena, em crise: ação + 1 Ponto de Fábula para recuperar de condições e NP × 10 PV. Se gastar 1 Ponto de Ultima: também NP × 10 PM.","Líder de Bando":"Como líder de teste em grupo: se apoiadores têm Laço, some as duas forças mais altas.","Redistribuir Riquezas":"Fim de conflito com vilão derrotado: 1d6 × NP PI para distribuir. Se vilão tinha >1 Ponto de Ultima: rouba 1 (máx 1 por vez).","Sertanejo":"Define região sertaneja como segunda Origem. Evocação pode gastar 1 Ponto de Ultima em vez de Fabula.","Valhacouto":"Fim de descanso: 1 PF para bando trazer NP+1 Suprimentos. Gasta Suprimento para rerrolar Viagem, criar barraca mágica. Com Ponto de Ultima: +2 Suprimentos."},
+  "Carteador":{"Altos e Baixos":"Ao rolar sucesso crítico ou falha crítica: compra uma carta e descarta uma.","Carta Armadilha":"Após ação inimiga visível: declara naipe e vira carta do fundo. Se curinga ou naipe: ação Feitiço grátis (custo ≤ NP × 5 PM).","Cartas Mágicas":"Ação + até [10 + NP × 5] PM: usa efeito de uma carta por 5 PM (máx 5 cartas). Descarta e compra a mesma quantidade.","Dobro ou Nada":"Antes de teste de Precisão/Magia ofensiva/afetar relógio: declara dobro ou nada. Sucesso crítico: dobra dano/seções. Outro resultado: falha.","Mulligan":"Fim do turno: descarta NP cartas e compra a mesma quantidade."},
+  "Cavaleiro Mágico":{"Alma Ferida":"1× por cena, em crise: cria Laços de desconfiança com NP inimigos visíveis. Dura até fim da cena; não precisa apagar Laços para criá-los.","Coração Ardente":"Sob forma mágica: evoca Laço de desconfiança/inferioridade/ódio em teste de dano → +NP × 2 de dano.","Impulso do Coração":"Custo de Magitransformação reduzido em NP igual à quantidade de Laços de admiração/lealdade/afeto.","Magitransformação":"Cria forma mágica. Ação + 25 PM para assumir. Combina motivação + aura + 2 focos.","Transformação Aprimorada":"Escolhe arma ou armadura de uma forma mágica. Fim de cada descanso: aplica/troca característica como item raro (≤ 40 × nível)."},
+  "Forjador de Almas":{"Animar Arma":"Ação + 1 Ponto de Alma: arma equipada fica flutuante (mão livre), perde multi. Fim de cada rodada: ataque único com RA 0. Dura NP rodadas.","Coletar Almas":"Coleta Pontos de Alma de inimigos derrotados. Máx NP+1.","Forjar Característica":"Ação Inventário + 10 PM ou 1 Ponto de Alma: molda característica (≤ 500z + nível × 40z) em arma visível. Dura até fim da cena.","Forjar Feitiço":"Aprende feitiço ofensivo de Elementalista. Ação Inventário + 10 PM ou 1 Ponto de Alma: infunde em arma. Um PJ equipado pode lançar 1× usando precisão da arma.","Manifestar Arma":"Ação Equipamento + 10 PM ou 1 Ponto de Alma: manifesta arma básica. Pode trocar um Atributo do teste por Vontade."},
+  "Lâmina Carmesim":{"Arsenal Vermelho":"Ação + 5 PV: cobre arma corpo a corpo com sangue. Ataques atingem alvos à distância (voadores forçados a pousar). Em crise: sem custo de PV e ataque livre incluso.","Dobrar Sangue":"Ação + 20 PM: escolhe ataque/feitiço de inimigo visível. Oposto [VON + VIG]. Se vencer: alvo usa ação escolhida contra alvo à sua escolha.","Escudo Escarlate":"Em crise: +NP Defesa e Def.M.","Frenesi Sanguinolento":"Sucesso crítico em ataque corpo a corpo: gasta oportunidade para recuperar NP × 10 PV.","Hemofagia":"1× por rodada, ao sofrer dano: gasta 10 PV para ataque livre contra a fonte. Dano = NP + RA do teste de Precisão."},
+  "Malandro":{"Engabelar":"1× por cena, ao ver teste: 10 PM para fazer o mesmo teste com bônus/penalidade NP. Pode trocar resultados. Resultado trocado pode ser usado como rolagem em um dos seus testes até fim da cena.","Explorar Fraqueza":"Início do turno: 10 PM para usar ação Estudo sem gastar ação, usando [AST + DES].","Gambiarra":"1× por cena: ação Inventário + até NP × 2 PI. Cada 2 PI: +1 em Precisão; +2 de dano; +1 em Objetivo; ou dano de veneno. Dura até fim da cena.","Golpe Aproveitador":"Ataque contra criatura que sofre condição: troca um dado de Precisão por DES e ganha +NP.","Jeitinho":"Aliado passa em teste de relógio: gasta até NP × 20 PM. Você não pode testar nesse relógio até próximo turno, mas preenche/apaga 1 seção por 20 PM."},
+  "Necromante":{"Além do Reino da Morte":"Criatura visível em crise perde PV (não morto-vivo): +1 Ponto de Túmulo (máx NP+1). Ao chegar a 0 PV: perde todos. Se perdeu 1+ e é 1ª vez na cena: recupera NP × Pontos perdidos PV.","Filhos da Sepultura":"Comunica-se com mortos-vivos. 1× por cena: pergunta a um, que deve responder sinceramente.","Medo é a Chave":"Após fazer inimigo perder PV (com Além do Reino e 1+ abalado/fraco): +1 Ponto de Túmulo e recupera NP × 2 PV e PM.","Por Quem os Sinos Dobram":"Feitiço de alvo único: gasta 1 Ponto de Túmulo. Dano adicional [(NP × 2) + condições do alvo] se tiver condições; OU alvo fica abalado.","Rondó do Pesadelo":"Feitiço ofensivo de alvo único: gasta 2 Pontos de Túmulo para atingir todos. Dano vira trevas, tipo não muda."}
+};
+
+/* =========================================================================
+   DESCRIÇÕES DE FEITIÇOS
+   ========================================================================= */
+const MAGIA_DESC={
+  "Arma Elemental":"Imbui uma arma com tipo de dano (ar/fogo/gelo/raio/terra). Dura a cena.",
+  "Clarão":"Causa [RA + 25] de dano de fogo (ignora Resistências).",
+  "Fulgur":"Causa [RA + 15] de dano de raio a até 3 criaturas. Oportunidade: atordoado.",
+  "Glacies":"Causa [RA + 15] de dano de gelo a até 3 criaturas. Oportunidade: lento.",
+  "Golpe de Sobrevoo":"Ataque livre corpo a corpo que também atinge criaturas voadoras (e as faz pousar).",
+  "Iceberg":"Causa [RA + 25] de dano de gelo (ignora Resistências).",
+  "Ignis":"Causa [RA + 15] de dano de fogo a até 3 criaturas. Oportunidade: abalado.",
+  "Mortalha Elemental":"Dá Resistência a um tipo de dano (ar/fogo/gelo/raio/terra) a até 3 criaturas. Dura a cena.",
+  "Pedregulho":"Causa [RA + 25] de dano de terra (ignora Resistências).",
+  "Raio":"Causa [RA + 25] de dano de raio (ignora Resistências).",
+  "Terra":"Causa [RA + 15] de dano de terra a até 3 criaturas. Não atinge criaturas em voo. Oportunidade: uma ação a menos.",
+  "Ventus":"Causa [RA + 15] de dano de ar a até 3 criaturas. Oportunidade: força pouso.",
+  "Vórtice":"Causa [RA + 25] de dano de ar (ignora Resistências).",
+  "Aceleração":"Alvo pode, no fim de cada turno, atacar livre ou lançar feitiço ≤ 10 PM grátis (2 usos).",
+  "Anomalia":"Enquanto durar, alvo Absorvedor/Imune a um tipo se torna Vulnerável a ele em vez disso.",
+  "Apostar":"Gasta até 20 PM: role dado de VON 1× por 10 PM. Resultado determina efeito (perde PV/PM, condições, cura, ou 30 de dano).",
+  "Arma das Trevas":"Imbui uma arma com dano de trevas. Dura a cena.",
+  "Dissipar":"Remove todos os feitiços de duração 'Cena' de uma criatura.",
+  "Drenar Espírito":"Alvo perde [RA + 20] PM. Você recupera metade do total perdido.",
+  "Drenar Vigor":"Alvo sofre [RA + 15] de dano de trevas. Você recupera metade do PV perdido.",
+  "Divinação":"Você pode forçar rerolagem de dados em até 2 testes de criaturas visíveis.",
+  "Espelhar":"Feitiços ofensivos contra o alvo são redirecionados para quem os lançou.",
+  "Parar":"Alvo faz uma ação a menos no próximo turno.",
+  "Umbra":"Causa [RA + 15] de dano de trevas a até 3 criaturas. Oportunidade: fraco.",
+  "Ômega":"Alvo perde [20 + metade do nível] PV.",
+  "Alucinação":"Aflige até 3 criaturas com abalado ou atordoado (sua escolha).",
+  "Arma Espiritual":"Imbui uma arma com dano de luz. Dura a cena.",
+  "Aura":"Def.M dos alvos (até 3) vira 12 (ou 13/14 em nível alto). Dura a cena.",
+  "Barreira":"Defesa dos alvos (até 3) vira 12 (ou 13/14 em nível alto). Dura a cena.",
+  "Bastião Espiritual":"Dá Resistência a luz/trevas/veneno a até 3 criaturas. Dura a cena.",
+  "Curar":"Cada um dos até 3 alvos recupera 40 PV (50 em nível 20+, 60 em 40+).",
+  "Despertar":"Aumenta um dado de Atributo escolhido do alvo em um passo (máx d12). Dura a cena.",
+  "Enfurecer":"Alvo fica enfurecido e não pode fazer Guarda ou Feitiço no próximo turno.",
+  "Lux":"Causa [RA + 15] de dano de luz a até 3 criaturas. Oportunidade: atordoado.",
+  "Piedade":"Enquanto durar, se o alvo chegaria a 0 PV, fica com 1 PV em vez disso.",
+  "Purificar":"Remove todas as condições de até 3 criaturas.",
+  "Reforçar":"Dá Imunidade a uma condição escolhida (abalado/atordoado/enfurecido/envenenado/fraco/lento).",
+  "Torpor":"Aflige até 3 criaturas com fraco ou lento (sua escolha)."
+};
+
+/* =========================================================================
+   PODERES HEROICOS
+   ========================================================================= */
+const PODERES_HEROICOS=[
+  {n:"Ambidestria",req:[],d:"Luta com duas armas de categorias diferentes (ou uma CaC e uma à distância). +2 Def com armas de categorias diferentes."},
+  {n:"Feitiços Extras",req:[],d:"Aprende dois feitiços de uma lista (Elementalista, Entropista ou Espiritualista)."},
+  {n:"PI Extras",req:[],d:"+4 PI máximos."},
+  {n:"PM Extras",req:[],d:"+10 PM máximos (+20 no nível 40+)."},
+  {n:"PV Extras",req:[],d:"+10 PV máximos (+20 no nível 40+)."},
+  {n:"Adversidade",req:["Guerreiro Sombrio"],d:"+1 em todos os testes e +2 de dano por condição que você sofre."},
+  {n:"Ataque Poderoso",req:["Furioso","Mestre de Armas"],d:"+5 de dano em ataques corpo a corpo (+10 no nível 40+)."},
+  {n:"Bolsos Fundos",req:["Inventor"],d:"Reduz custos de PI em 1 (mínimo 1)."},
+  {n:"Cometa",req:["Entropista"],d:"Aprende feitiço supremo Cometa (60 de dano em um alvo, 40 em todos)."},
+  {n:"Companheiro Heroico",req:["Andarilho"],d:"Companheiro Fiel: +10 PV, +5 dano, +1 passo em um Atributo e um poder extra."},
+  {n:"Desalmado",req:["Guerreiro Sombrio"],d:"Ataque de alvo único com Laço: gasta metade dos PV para +10×força do Laço de dano."},
+  {n:"Domínio Quimérico",req:["Quimerista"],d:"Aprende feitiços de construto/demônio/elemental/morto-vivo. +2 no limite."},
+  {n:"Ecos Arcanos",req:["Arcanista"],d:"Arcano vinculado aplicável a teste de relógio: +1 seção em sucesso."},
+  {n:"Esperança",req:["Espiritualista"],d:"Aprende feitiço supremo Esperança (recupera PJ rendido)."},
+  {n:"Feitiço Poderoso",req:["Elementalista","Entropista","Espiritualista","Quimerista"],d:"+5 de dano com feitiços (+10 no nível 40+)."},
+  {n:"Golpe Tempestuoso",req:["Mestre de Armas"],d:"Ataques multi CaC: +multi em Precisão e +5 de dano (+5 se alvo único)."},
+  {n:"Imbatível",req:["Guardião"],d:"1× por cena: em vez de 0 PV, fica com 1 PV."},
+  {n:"Imunidade à Condição",req:["Andarilho"],d:"Imune a uma condição escolhida."},
+  {n:"Matemágica",req:["Erudito"],d:"Feitiço de alvo único vira em massa, filtrando por Atributo + tipo de dado."},
+  {n:"Mão de Gorila",req:["Furioso"],d:"Equipa armas de duas mãos (espada/lança/malho/pesada) com uma só mão."},
+  {n:"Melhoria",req:["Inventor"],d:"Em descanso: aplica/troca características em armas/armaduras/escudos do grupo."},
+  {n:"Mira Perfeita",req:["Atirador"],d:"Tiro de Aviso pode aplicar duas opções em vez de uma."},
+  {n:"Muralha",req:["Guardião"],d:"Na 1ª rodada de cada conflito: Resistente a tudo e imune a condições."},
+  {n:"Pilhar",req:["Ladino"],d:"Roubo de Alma pode ter várias criaturas como alvo (um teste único)."},
+  {n:"Previsível!",req:["Erudito"],d:"Ação + 20 PM: força criatura a gastar 20 PM para fazer ação escolhida."},
+  {n:"Repetição",req:["Orador"],d:"1× por turno, após Condenar ou Encorajar, reutiliza o poder."},
+  {n:"Revelação",req:["Arcanista"],d:"Vincula um Arcano novo. 2 PF: usa dispensa sem dispensar."},
+  {n:"Retórica Desarmante",req:["Orador"],d:"Ação: soldado abalado/em crise sai do conflito pagando 20 + metade do nível em PM."},
+  {n:"Sumir",req:["Ladino"],d:"Após ataque: 1 PF para ficar invisível até o próximo turno."},
+  {n:"Tiro Poderoso",req:["Atirador"],d:"+5 de dano em ataques à distância (+10 no nível 40+)."},
+  {n:"Vulcão",req:["Elementalista"],d:"Aprende feitiço supremo Vulcão (fogo em massa ou alvo único)."},
+  {n:"Adepto das Lâminas",req:["Ladino","Mestre de Armas"],d:"Adagas viram arremesso/espada/luta para requisitos. +1 DEF/DEF.M com adaga."},
+  {n:"Batalha Incessante",req:["Comandante"],d:"Custo em PM de Carga de Cavalaria, Decreto do Bispo e Roque do Rei reduzido à metade."},
+  {n:"Bimagus",req:["Elementalista","Entropista","Espiritualista"],d:"Nível 30+. 1× por turno: 20-50 PM para lançar dois feitiços (2º ≤ metade do 1º)."},
+  {n:"Corte Triplo",req:["Dançarino","Mestre de Armas"],d:"Considera espaço de armadura como segunda mão secundária. Ataca com 3 armas."},
+  {n:"Espetáculo",req:["Dançarino"],d:"Início do turno: 1 PF para apresentar até 3 danças sem custo em PM."},
+  {n:"Enxame Rodopiante",req:["Atirador","Dançarino","Furioso"],d:"Ataques com arremesso geram Pontos de Ímpeto (máx 5). +dano igual a PI. Gasta para +Defesa."},
+  {n:"Flecha Dupla",req:["Atirador","Comandante"],d:"Ataque com arco: dois ataques (regras de duas armas)."},
+  {n:"Floresta de Ferro",req:["Comandante","Mestre de Armas"],d:"Ataque com lança: 2 PM para 1/2 dano em todos e escolher ação proibida ao alvo escolhido."},
+  {n:"Hoplita",req:["Comandante","Guardião"],d:"Com arma + escudo: +5 de dano e +1 Defesa."},
+  {n:"Golpe Pulverizador",req:["Furioso","Guerreiro Sombrio","Mestre de Armas"],d:"Trespassar com arma pesada: causa dano igual à RA em vez de nenhum."},
+  {n:"Guarda Mágica",req:["Elementalista","Entropista","Espiritualista","Quimerista"],d:"Na Guarda sem cobrir: interrompe feitiço inimigo pagando 10 + custo."},
+  {n:"Grande Invocação",req:["Arcanista"],d:"Nível 30+. Ao invocar Arcano: 1 PF + metade dos PV para manifestar como criatura (patente soldado)."},
+  {n:"Maré Crescente",req:["Furioso","Mestre de Armas"],d:"Ataque com arma de luta: ganha Pontos de Coragem. +dano = 2 + Pontos. Fim da cena: gasta todos e recupera 10 PV/PM."},
+  {n:"Mira Arcana",req:["Atirador","Mestre de Armas","Simbolista"],d:"Ataque com arma arcana: +5 de dano. Próximo feitiço ofensivo de alvo único: crítico se dados iguais."},
+  {n:"Momento Fugaz",req:["Mestre de Armas"],d:"Contra-ataque com espada: usa RA ao dano."},
+  {n:"Música Tema",req:["Virtuoso"],d:"Música tema: Resistente ao tipo, +5 de dano do tipo, custo de versos reduzido à metade."},
+  {n:"Paso Doble",req:["Dançarino"],d:"Em crise: ignora custo em PM de Me Acompanhe."},
+  {n:"Rituais Ágeis",req:["Elementalista","Entropista","Espiritualista","Quimerista"],d:"Relógio de ritual em conflito: 2 seções a menos (mín. 4)."},
+  {n:"Selos Rituais",req:["Simbolista"],d:"Ritual (custo ≤ 60 PM) fora de conflito: armazena em selo. Um selo ativo por vez."},
+  {n:"Tábula Rasa",req:["Comandante"],d:"Após Decreto/Roque em crise: cada inimigo perde 10/20/30 PV."},
+  {n:"Teia de Aranha",req:["Furioso","Mestre de Armas"],d:"Ataque com malho: dois ataques (regras de duas armas)."},
+  {n:"Tela em Branco",req:["Simbolista"],d:"Ação + até 30 PM: cura condições e efeitos de cena de criaturas (1 por 5 PM)."},
+  {n:"Tiroteio",req:["Atirador"],d:"Após negar ataque à distância com Fogo Cruzado: resultado par → ataque livre contra atacante."},
+  {n:"Trilha Épica",req:["Virtuoso"],d:"Verso em volume médio/forte: dobra custo ou 1 PF. Precisão de você e aliados = sucesso crítico se dados iguais."},
+  {n:"Alma Quimérica",req:["Quimerista"],d:"Feitiços de quimerista: benefício baseado na espécie original. Resistente a 2 tipos OU +5 de dano do tipo."},
+  {n:"Caçador Silencioso",req:["Atirador","Ladino","Mestre de Armas"],d:"Alta Velocidade com arco/lança/arremesso: +5×NP de dano. Criaturas atingidas não fazem ataques livres."},
+  {n:"Cloromancia Maior",req:["Floralista"],d:"1× por turno, quando magissemente deixar jardim: 20 PM para reproduzir efeito 'No fim do seu turno'."},
+  {n:"Cochilo Poderoso",req:["Andarilho","Guardião","Mercador"],d:"Ação: recupera 20 + metade do nível PV/PM e todas as condições. Perde sentidos e Defesas viram 5 até próximo turno."},
+  {n:"Conjuração Maromba",req:["Andarilho","Furioso","Guerreiro Sombrio","Quimerista"],d:"Substitui um Atributo por Vigor em testes de Magia. Armas com VIG na precisão viram arcanas."},
+  {n:"Dedo Verde",req:["Floralista"],d:"Ao preencher seções do relógio de germinação: ±1 seção. Dano de magissementes ignora Resistências."},
+  {n:"Dosagem Precisa",req:["Erudito","Gourmet","Inventor","Mercador"],d:"Poções/iguarias/feitiços de cura podem passar do PV/PM máximo (até 150%)."},
+  {n:"Golpe Valente",req:["Comandante","Furioso","Guardião","Mestre de Armas"],d:"Quebra-ossos com escudo: desafia criatura. +5 de dano."},
+  {n:"Lado a Lado",req:["Andarilho"],d:"Companheiro +5 de dano. Pode evocar Traço do companheiro com 1 PF. Após companheiro agir: você e ele recuperam 10 PM, ou +NP em próximo teste."},
+  {n:"Levanta a Cabeça!",req:["Orador","Virtuoso"],d:"Confio em Você: alvo aumenta um dado de Atributo em um passo (máx d12) até fim da cena."},
+  {n:"Luar Purificador",req:["Entropista","Espiritualista"],d:"Feitiço ofensivo com arma arcana e RA 8+: remove efeitos de cena. Feitiço em aliado com arma arcana: remove condição."},
+  {n:"Manancial Interior",req:["Invocador"],d:"Escolhe manancial ao descansar. Fica sempre disponível, permite rituais de elementalismo ligados a ele, Resistente a ele, muda tipo de dano."},
+  {n:"Manipular Magia",req:["Elementalista","Entropista","Invocador","Simbolista"],d:"Após feitiço ofensivo inimigo com resultado par: usa Invocação gratuita contra ele."},
+  {n:"Muralha de Espinhos",req:["Floralista","Guerreiro Sombrio"],d:"Resistente a luz/veneno. Em crise: preenche seção do relógio de germinação. Golpe das Sombras: pode causar veneno e +2×seções PV de dano."},
+  {n:"Palavras de Sabedoria",req:["Comandante","Erudito","Orador"],d:"Teste de Apoio com [AST+AST]/[AST+VON]/[VON+VON]. Trabalho em equipe em conflito: 10 PM para 2 de 4 benefícios."},
+  {n:"Poder dos Cinco Mananciais",req:["Invocador"],d:"Após invocar: você e aliado aumentam um Atributo (definido pelo manancial) até fim da cena."},
+  {n:"Por um Futuro Melhor",req:["Mercador"],d:"Gasta Pontos de Comércio em vez de Fabula. Receber 2+ PC: pode receber 1 para aumentar prosperidade de assentamento."},
+  {n:"Refração Auramante",req:["Arcanista","Espiritualista"],d:"Escolhe tipo de dano. Aura/Barreira dão Resistência a ele. Ao alvo atingido: represália."},
+  {n:"Rodízio",req:["Gourmet"],d:"Combina 4 ingredientes em iguaria."},
+  {n:"Tranquilidade Efêmera",req:["Espiritualista","Ladino","Simbolista"],d:"Alucinação/Torpor: aplica ambas as condições. Remove condições para causar perda de PV."},
+  {n:"Anatomista",req:["Atirador","Erudito","Furioso","Mestre de Armas"],d:"Escolhe 2 espécies. Dano a humanoide/espécie: +5 de dano OU criatura desorientada até fim da cena."},
+  {n:"Cancela do Lampião",req:["Bandoleiro"],d:"Alvo de poder/feitiço já sofrido nesta cena: 1 PF para ficar imune. 1 Ponto de Ultima: também recupera 20 PV."},
+  {n:"Cargas Radiantes",req:["Astrólogo"],d:"Ao gerar cargas: 5 PM para transformar em carga cósmica. Ao causar dano/perda de PV: consome para +5 PV."},
+  {n:"Ceifeiro do Pesar",req:["Entropista","Necromante"],d:"Drenar Espírito/Vigor: recupera valor total, não metade. +10 PM de perda em níveis altos."},
+  {n:"Constelação da Cruz Austral",req:["Astrólogo"],d:"1× por cena: 20 PM + 4 tipos de carga. Cada poder de astrólogo gera efeito básico em alvo diferente."},
+  {n:"Corte Infernal",req:["Elementalista","Guerreiro Sombrio"],d:"Golpe das Sombras: pode virar fogo ou gelo. Ataque livre do Golpe pode atingir alvos à distância."},
+  {n:"Dragão Empalador",req:["Comandante","Guerreiro Sombrio"],d:"Golpe das Sombras: RA = 0. Após o ataque, usa Carga de Cavalaria sem ação."},
+  {n:"Está Vivo!",req:["Andarilho","Inventor"],d:"Companheiro construto: Absorção a raio, +2×NP Visionário PV. Sem armas: +NP Visionário de dano."},
+  {n:"Fagomago",req:["Entropista","Gourmet","Quimerista"],d:"Dissipar: '10 × A PM', até 3 criaturas. Ao encerrar feitiços: 20 PM por feitiço OU copia efeito em si mesmo."},
+  {n:"Fluxo de Yin e Yang",req:["Astrólogo","Elementalista","Dançarino","Invocador"],d:"Dano físico/gelo/terra/trevas: +Yin. Dano ar/fogo/luz/raio: +Yang. Fim do turno com 3+ de cada tipo: efeito de PM."},
+  {n:"Forja Entrelaçada",req:["Forjador de Almas"],d:"Ações Inventário ou Equipamento sem gastar ação para usar poderes de forjador."},
+  {n:"Instinto Assassino",req:["Lâmina Carmesim"],d:"Ataque corpo a corpo contra alvo em crise: +10 de dano (+20 no nível 40+)."},
+  {n:"Lido Como um Livro",req:["Erudito","Ladino","Malandro"],d:"Roubo de Alma com sucesso: Estudo sem ação (mesmo resultado). +NP contra elite/campeão roubado."},
+  {n:"Maestria de Ofuda",req:["Arcanista","Mercador","Simbolista"],d:"Simbolismo em conflito: 20 PM para ignorar custo em PI. Ataque livre atinge alvos à distância."},
+  {n:"Mestre de Duelos",req:["Atirador","Carteador","Furioso","Ladino","Mestre de Armas"],d:"Par Mágico: +valor comum de dano, +2×valor comum PM recuperados."},
+  {n:"Multifunção",req:["Forjador de Almas"],d:"Objetivo com item caracterizado: +1 por item (máx +2)."},
+  {n:"Nascimento da Crueldade",req:["Necromante"],d:"NPC morto (fera/humanoide/monstro/planta): 2 Pontos de Túmulo + reduz PV/PM máx pelo nível. Cadáver vira lacaio."},
+  {n:"Papinho Amigável",req:["Malandro","Orador"],d:"Ação: soldado com 2+ condições: paga 30 + metade do nível em PM. Controla a ficha até fim da cena."},
+  {n:"Poder da Amizade",req:["Cavaleiro Mágico"],d:"1× por cena sob forma mágica: ação + 10×Laços em PM. Você e aliados atacam uma criatura (RA 0). Dano adicional de luz."},
+  {n:"Preto e Branco",req:["Carteador","Entropista","Espiritualista","Guerreiro Sombrio"],d:"Encrenca em Dobro: dano vira luz ou trevas. Curinga no descarte: ignora Imunidades/Resistências."},
+  {n:"Pulso das Larvas",req:["Necromante"],d:"Com 1+ Ponto de Túmulo: Imune a trevas/veneno, Resistente a físico, Vulnerável a luz."},
+  {n:"Raízes Simbióticas",req:["Andarilho","Floralista","Quimerista"],d:"Ao recuperar PV: metade vai para companheiro. Fim de turno: companheiro com PV cheio faz ataque livre."},
+  {n:"Redistribuição Aprimorada",req:["Bandoleiro"],d:"Limite de Pontos de Ultima do Redistribuir Riquezas: 3."},
+  {n:"Rito Proibido",req:["Arcanista","Carteador"],d:"Curinga no descarte: Resistente ao naipe do topo. Novo efeito: Monarca Proibido (4+1 curinga)."},
+  {n:"Sacrifício Arcano",req:["Arcanista","Guardião"],d:"1× por cena: você e aliados reduzem a 1 PV em vez de 0. Dispensa o Arcano."},
+  {n:"Segredo do Grande Caldeirão",req:["Inventor"],d:"Poção via Alquimia: dado de alvo pode ser 13 ou 17."},
+  {n:"Tática da Asa Quebrada",req:["Comandante","Guardião"],d:"Após teste inimigo: +3 ao resultado. Aliados ficam Resistentes a tudo ou causam +5 de dano."},
+  {n:"Truque do Caçador",req:["Atirador","Mestre de Armas"],d:"Transformação de arma mutável: +5 dano no próximo ataque, ou recupera 5 PV/PM se acertou."},
+  {n:"Vanguarda das Cartas",req:["Carteador"],d:"Ação: baixa carta de vanguarda virada para baixo (máx 2). Ao sofrer dano: revela; se compatível, não sofre dano e recupera PM."},
+  {n:"Voz da Bruxaria",req:["Orador","Virtuoso"],d:"Após inimigo sofrer condições por verso ou Condenar: fica enfeitiçado (deve incluir você em alvos, se possível)."}
+];
+
+/* =========================================================================
+   ESTADO E PERSISTÊNCIA
+   ========================================================================= */
+const STORAGE_KEY="fabula-ultima-sheet-v1";
+const DEFAULT_STATE={
+  nome:"",pronomes:"",identidade:"",tema:"",origem:"",
+  nivel:5,zenites:0,xp:0,pontosFabula:3,
+  subiuNivelSessao:false,
+  atributos:{des:8,vig:8,ast:8,von:8},
+  pv:{atual:0,bonus:0},pm:{atual:0,bonus:0},pi:{atual:0,bonus:0},
+  defesa:{bonus:0},defM:{bonus:0},iniciativa:{bonus:0},
+  classes:[],
+  inventario:[],
+  slots:{principal:null,secundaria:null,armadura:null,acessorio:null},
+  arcanos:[],
+  diario:[],
+  lacos:[],
+  equipamento:{mochila:""},
+  feiticos:"",anotacoes:""
+};
+const EMOCOES=["Admiração","Inferioridade","Lealdade","Desconfiança","Afeto","Ódio"];
+let state=load();
+let saveTimer;
+function uid(){return Math.random().toString(36).slice(2,10)}
+
+function sanitize(data){
+  const m={...structuredClone(DEFAULT_STATE),...data};
+  ["des","vig","ast","von"].forEach(k=>{m.atributos[k]=Number(m.atributos[k])||8});
+  ["nivel","zenites","xp","pontosFabula"].forEach(k=>{m[k]=Number(m[k])||0});
+  m.subiuNivelSessao=!!m.subiuNivelSessao;
+  ["pv","pm","pi","defesa","defM","iniciativa"].forEach(k=>{
+    if(m[k]){m[k].atual=Number(m[k].atual)||0;m[k].bonus=Number(m[k].bonus)||0}
+  });
+  m.slots=m.slots||{principal:null,secundaria:null,armadura:null,acessorio:null};
+  if(!Array.isArray(m.inventario)) m.inventario=[];
+  ["principal","secundaria","armadura","acessorio"].forEach(k=>{
+    const v=m.slots[k];
+    if(typeof v==="string"&&v){
+      const item=CATALOGO.find(i=>i.n===v);
+      if(item){
+        const newId=uid();
+        m.inventario.push({id:newId,...item});
+        m.slots[k]=newId;
+      }else m.slots[k]=null;
+    }
+  });
+  if(!Array.isArray(m.arcanos)) m.arcanos=[];
+  m.arcanos.forEach(a=>{a.id=a.id||uid();a.fundido=!!a.fundido;});
+  if(!Array.isArray(m.diario)) m.diario=[];
+  m.diario.forEach(d=>{d.id=d.id||uid();d.data=d.data||"";d.titulo=d.titulo||"";d.texto=d.texto||"";});
+  if(Array.isArray(m.classes)){
+    m.classes.forEach(c=>{
+      c.habilidades=c.habilidades||{};
+      Object.keys(c.habilidades).forEach(h=>{c.habilidades[h]=Number(c.habilidades[h])||0});
+      c.magias=c.magias||{};
+      c.textos=c.textos||{};
+      c.expandida=!!c.expandida;
+      c.escolhaBonus=c.escolhaBonus==="pm"?"pm":"pv";
+      c.poderHeroico=c.poderHeroico||"";
+    });
+  }
+  return m;
+}
+function load(){
+  try{
+    const raw=localStorage.getItem(STORAGE_KEY);
+    if(!raw) return structuredClone(DEFAULT_STATE);
+    return sanitize(JSON.parse(raw));
+  }catch{return structuredClone(DEFAULT_STATE)}
+}
+function save(){
+  clearTimeout(saveTimer);
+  saveTimer=setTimeout(()=>localStorage.setItem(STORAGE_KEY,JSON.stringify(state)),200);
+}
+function getPath(o,p){return p.split(".").reduce((a,k)=>a?a[k]:undefined,o)}
+function setPath(o,p,v){
+  const ks=p.split(".");const last=ks.pop();
+  const t=ks.reduce((a,k)=>a[k]??={},o);t[last]=v;
+}
+function escapeAttr(s){return String(s??"").replace(/"/g,"&quot;").replace(/</g,"&lt;")}
+
+function getItemById(id){if(!id) return null;return state.inventario.find(i=>i.id===id)||null}
+function permissoesMarciais(){
+  const set=new Set();
+  state.classes.forEach(c=>{
+    if(nivelDaClasse(c)<=0) return;
+    const def=FABULA.classes[c.nome];
+    if(!def||!def.m) return;
+    def.m.forEach(p=>set.add(p));
+  });
+  return set;
+}
+function nomeTipo(t){return {arma:"Arma",armadura:"Armadura",escudo:"Escudo",acessorio:"Acessório"}[t]||t}
+function temHabilidade(className,habName){
+  return state.classes.some(c=>c.nome===className&&(Number(c.habilidades?.[habName])||0)>0);
+}
+function getQuimeristaIndex(){
+  return state.classes.findIndex(c=>c.nome==="Quimerista"&&(Number(c.habilidades?.["Imitação Mágica"])||0)>0);
+}
+
+function bindInputs(){
+  document.querySelectorAll("[data-bind]").forEach(el=>{
+    const p=el.dataset.bind;const v=getPath(state,p);
+    if(el.type==="checkbox") el.checked=!!v;
+    else if(v!==undefined&&v!==null) el.value=v;
+    el.addEventListener("input",()=>{
+      let x=el.value;
+      if(el.type==="number") x=x===""?0:Number(x);
+      else if(el.tagName==="SELECT"){const n=Number(x);if(x!==""&&!isNaN(n)) x=n}
+      setPath(state,p,x);save();recalc();
+    });
+  });
+}
+function nivelDaClasse(c){
+  if(!c.habilidades) return 0;
+  return Object.values(c.habilidades).reduce((s,v)=>s+(Number(v)||0),0);
+}
+function textoBeneficio(b){
+  if(!b) return null;
+  if(b.pv) return `+${b.pv} PV`;
+  if(b.pm) return `+${b.pm} PM`;
+  if(b.pi) return `+${b.pi} PI`;
+  if(b.escolha==="pvpm"){const v=b.valor||5;return `+${v} PV ou +${v} PM (escolha)`}
+  return null;
+}
+
+/* =========================================================================
+   EXPERIÊNCIA / SUBIR DE NÍVEL
+   ========================================================================= */
+function atualizarBotaoNivel(){
+  const btn=document.getElementById("btn-level-up");
+  const msg=document.getElementById("xp-msg");
+  const novaBox=document.getElementById("btn-nova-sessao");
+  if(!btn||!msg||!novaBox) return;
+
+  const xp=Number(state.xp)||0;
+  setCalc("nivelDisplay",Number(state.nivel)||0);
+
+  if(state.subiuNivelSessao){
+    btn.disabled=true;
+    msg.className="xp-msg bloqueado";
+    msg.textContent="Você já subiu de nível nesta sessão. Aguarde a próxima sessão.";
+    novaBox.style.display="";
+  } else if(xp<10){
+    btn.disabled=true;
+    msg.className="xp-msg";
+    msg.textContent=`Faltam ${10-xp} XP para poder subir de nível.`;
+    novaBox.style.display="none";
+  } else {
+    btn.disabled=false;
+    msg.className="xp-msg pronto";
+    msg.textContent=`Você pode subir de nível! (${xp} XP disponível)`;
+    novaBox.style.display="none";
+  }
+}
+
+function setupLevelUp(){
+  const btn=document.getElementById("btn-level-up");
+  const novaBox=document.getElementById("btn-nova-sessao");
+  if(btn) btn.addEventListener("click",()=>{
+    if(state.subiuNivelSessao) return;
+    const xp=Number(state.xp)||0;
+    if(xp<10) return;
+    state.xp=xp-10;
+    state.nivel=(Number(state.nivel)||0)+1;
+    state.subiuNivelSessao=true;
+    // Atualiza o input de XP
+    const xpInp=document.querySelector('[data-bind="xp"]');
+    if(xpInp) xpInp.value=state.xp;
+    // Atualiza o input de Nível
+    const nivelInp=document.querySelector('[data-bind="nivel"]');
+    if(nivelInp) nivelInp.value=state.nivel;
+    save();
+    recalc();
+    atualizarBotaoNivel();
+  });
+  if(novaBox) novaBox.addEventListener("click",()=>{
+    state.subiuNivelSessao=false;
+    save();
+    atualizarBotaoNivel();
+  });
+}
+
+/* =========================================================================
+   RENDER CLASSES
+   ========================================================================= */
+function renderClasses(){
+  const container=document.getElementById("classes");
+  if(!container) return;
+  container.innerHTML="";
+  state.classes.forEach((c,i)=>{
+    const card=document.createElement("div");
+    card.className="class-card";
+    const nivel=nivelDaClasse(c);
+    const dominada=nivel>=10;
+    if(dominada) card.classList.add("dominada");
+    const defRaw=FABULA.classes[c.nome];
+    const def=defRaw?defRaw.h:[];
+    const header=document.createElement("div");
+    header.className="class-header";
+    header.innerHTML=`
+      <label>Classe
+        <div class="combo" data-idx="${i}">
+          <input type="text" class="combo-input" data-idx="${i}"
+                 data-committed="${escapeAttr(c.nome)}"
+                 placeholder="Escolha uma classe..." autocomplete="off"
+                 value="${escapeAttr(c.nome)}" />
+          <div class="combo-list" hidden></div>
+        </div>
+      </label>
+      <div class="lvl-badge">
+        <span>Nível</span>
+        <span class="num">${nivel}${dominada?" ✓":""}</span>
+        ${dominada?'<div class="dominada-badge">Dominada</div>':''}
+      </div>
+      <div></div>
+      <button class="remove-btn" data-remove="classes" data-idx="${i}">✕</button>`;
+    card.appendChild(header);
+    if(defRaw){
+      const badges=[];
+      const tb=textoBeneficio(defRaw.b);
+      if(tb) badges.push(`<span class="beneficio-badge bonus"><span class="label">Bônus</span> ${escapeAttr(tb)}</span>`);
+      if(defRaw.m&&defRaw.m.length>0){
+        const txt=defRaw.m.map(x=>MARCIAL_LABEL[x]).join(", ");
+        badges.push(`<span class="beneficio-badge marcial"><span class="label">Marcial</span> ${escapeAttr(txt)}</span>`);
+      }
+      if(defRaw.r&&defRaw.r.length>0){
+        badges.push(`<span class="beneficio-badge ritual"><span class="label">Rituais</span> ${escapeAttr(defRaw.r.join(", "))}</span>`);
+      }
+      if(badges.length>0){
+        const box=document.createElement("div");
+        box.className="beneficios"+(nivel>0?"":" nao-ativa");
+        if(nivel===0) badges.push(`<span class="beneficio-badge" style="opacity:.6"><em>ativos a partir do 1º nível</em></span>`);
+        box.innerHTML=badges.join("");
+        card.appendChild(box);
+      }
+    }
+    if(defRaw&&defRaw.b&&defRaw.b.escolha==="pvpm"&&nivel>0){
+      const valor=defRaw.b.valor||5;
+      const esc=c.escolhaBonus==="pm"?"pm":"pv";
+      const box=document.createElement("div");
+      box.className="escolha-bonus";
+      box.innerHTML=`<label>Bônus inicial: +${valor}
+        <select data-idx="${i}" data-escolha-bonus="1">
+          <option value="pv" ${esc==="pv"?"selected":""}>PV máximos</option>
+          <option value="pm" ${esc==="pm"?"selected":""}>PM máximos</option>
+        </select></label>`;
+      card.appendChild(box);
+    }
+    if(def.length>0){
+      c.habilidades=c.habilidades||{};
+      c.magias=c.magias||{};
+      c.textos=c.textos||{};
+      let visiveis=def;
+      if(dominada&&!c.expandida) visiveis=def.filter(h=>(Number(c.habilidades[h.n])||0)>0);
+      visiveis.forEach(h=>{
+        const cur=Number(c.habilidades[h.n]||0);
+        const maxLabel=h.m>1?`máx ${h.m}`:"única";
+        const desc=HAB_DESC[c.nome]?.[h.n]||"";
+        const row=document.createElement("div");
+        row.className="ability-row";
+        row.innerHTML=`
+          <div class="ability-name ${desc?"clickable":""}" data-idx="${i}" data-hab="${escapeAttr(h.n)}">
+            <span>${desc?'<span class="expand-icon">▸</span>':''}${escapeAttr(h.n)}</span>
+            <span class="max">${maxLabel}</span>
+          </div>
+          <input type="number" min="0" max="${h.m}"
+                 data-idx="${i}" data-hab="${escapeAttr(h.n)}" value="${cur}" />`;
+        card.appendChild(row);
+        if(desc){
+          const descEl=document.createElement("div");
+          descEl.className="ability-desc";
+          descEl.hidden=true;
+          descEl.textContent=desc;
+          card.appendChild(descEl);
+          const nameEl=row.querySelector(".ability-name");
+          nameEl.addEventListener("click",e=>{
+            if(e.target.tagName==="INPUT") return;
+            descEl.hidden=!descEl.hidden;
+            nameEl.classList.toggle("expanded",!descEl.hidden);
+          });
+        }
+        if(h.g&&cur>0){
+          const picker=document.createElement("div");
+          picker.className="spell-picker";
+          const lista=FABULA.magias[h.g]||[];
+          const esc=c.magias[h.n]||[];
+          while(esc.length<cur) esc.push("");
+          esc.length=cur;
+          c.magias[h.n]=esc;
+          esc.forEach((sp,idx)=>{
+            const opts=['<option value="">— escolha —</option>'].concat(lista.map(m=>{
+              const sel=m===sp?"selected":"";
+              return `<option value="${escapeAttr(m)}" ${sel}>${escapeAttr(m)}</option>`;
+            })).join("");
+            const w=document.createElement("label");
+            w.innerHTML=`Magia ${idx+1}
+              <select data-idx="${i}" data-hab="${escapeAttr(h.n)}" data-spell-idx="${idx}">
+                ${opts}
+              </select>`;
+            picker.appendChild(w);
+            const d=MAGIA_DESC[sp];
+            if(d){
+              const dd=document.createElement("div");
+              dd.className="spell-desc";
+              dd.textContent=d;
+              picker.appendChild(dd);
+            }
+          });
+          card.appendChild(picker);
+        }
+        if(h.t==="texto"&&cur>0){
+          const total=cur+(h.tOffset||0);
+          const picker=document.createElement("div");
+          picker.className="text-picker";
+          const arr=c.textos[h.n]||[];
+          while(arr.length<total) arr.push("");
+          arr.length=total;
+          c.textos[h.n]=arr;
+          arr.forEach((val,idx)=>{
+            const label=`Magia ${idx+1}${idx>=cur?" (bônus)":""}`;
+            const w=document.createElement("label");
+            w.innerHTML=`${label}
+              <input type="text" data-idx="${i}" data-hab="${escapeAttr(h.n)}" data-text-idx="${idx}"
+                     placeholder="Nome da magia aprendida" value="${escapeAttr(val)}" />`;
+            picker.appendChild(w);
+          });
+          card.appendChild(picker);
+        }
+      });
+      if(dominada){
+        const opcoes=PODERES_HEROICOS.filter(p=>p.req.length===0||p.req.includes(c.nome));
+        const phBox=document.createElement("div");
+        phBox.className="poder-heroico";
+        const escolhido=c.poderHeroico||"";
+        const info=PODERES_HEROICOS.find(p=>p.n===escolhido);
+        if(escolhido&&info){
+          phBox.innerHTML=`
+            <div class="titulo">⭐ Poder Heroico</div>
+            <div style="font-weight:700;margin-bottom:4px">${escapeAttr(escolhido)}</div>
+            <div class="poder-desc">${escapeAttr(info.d)}</div>
+            <button class="trocar" data-idx="${i}">Trocar poder</button>`;
+          phBox.querySelector(".trocar").addEventListener("click",()=>{
+            state.classes[i].poderHeroico="";save();renderClasses();
+          });
+          card.appendChild(phBox);
+        }else{
+          phBox.innerHTML=`
+            <div class="titulo">⭐ Escolha um Poder Heroico</div>
+            <select data-idx="${i}" data-poder-heroico="1">
+              <option value="">— escolha —</option>
+              ${opcoes.map(p=>{
+                const tag=p.req.length===0?"(geral)":"(classe)";
+                return `<option value="${escapeAttr(p.n)}">${escapeAttr(p.n)} ${tag}</option>`;
+              }).join("")}
+            </select>
+            <div class="poder-desc" style="opacity:.7;font-style:italic">
+              Você pode escolher um poder geral ou um específico desta classe.
+            </div>`;
+          card.appendChild(phBox);
+        }
+        const btn=document.createElement("button");
+        btn.className="toggle-hab";
+        btn.textContent=c.expandida?"Ocultar habilidades não usadas":"Mostrar todas as habilidades";
+        btn.addEventListener("click",()=>{
+          state.classes[i].expandida=!c.expandida;save();renderClasses();
+        });
+        card.appendChild(btn);
+      }
+    }
+    container.appendChild(card);
+  });
+
+  container.querySelectorAll(".combo").forEach(combo=>{
+    const input=combo.querySelector(".combo-input");
+    const list=combo.querySelector(".combo-list");
+    const idx=Number(combo.dataset.idx);
+    let activeIdx=-1;
+    const allOptions=Object.keys(FABULA.classes);
+    function renderList(filter){
+      const f=(filter||"").trim().toLowerCase();
+      const filtered=f?allOptions.filter(o=>o.toLowerCase().includes(f)):allOptions;
+      if(filtered.length===0){
+        list.innerHTML=`<div class="combo-empty">Nenhuma classe encontrada</div>`;
+      }else{
+        list.innerHTML=filtered.map(o=>`<div class="combo-opt" data-val="${escapeAttr(o)}">${escapeAttr(o)}</div>`).join("");
+      }
+      activeIdx=-1;
+    }
+    function openList(){
+      const committed=input.dataset.committed||"";
+      renderList(input.value===committed?"":input.value);
+      list.hidden=false;
+    }
+    function closeList(){list.hidden=true;activeIdx=-1}
+    function commit(novo){
+      const committed=input.dataset.committed||"";
+      if(novo===committed){closeList();return}
+      state.classes[idx].nome=novo;
+      state.classes[idx].habilidades={};
+      state.classes[idx].magias={};
+      state.classes[idx].textos={};
+      state.classes[idx].expandida=false;
+      state.classes[idx].escolhaBonus="pv";
+      state.classes[idx].poderHeroico="";
+      save();renderClasses();recalc();renderEquipamento();
+      renderSecoesCondicionais();
+    }
+    input.addEventListener("focus",openList);
+    input.addEventListener("click",()=>{if(list.hidden) openList()});
+    input.addEventListener("input",()=>{
+      state.classes[idx].nome=input.value;save();
+      renderList(input.value);list.hidden=false;
+    });
+    input.addEventListener("keydown",e=>{
+      const opts=list.querySelectorAll(".combo-opt");
+      if(e.key==="ArrowDown"){
+        e.preventDefault();
+        if(list.hidden){openList();return}
+        activeIdx=Math.min(activeIdx+1,opts.length-1);
+        opts.forEach((o,i)=>o.classList.toggle("active",i===activeIdx));
+        if(opts[activeIdx]) opts[activeIdx].scrollIntoView({block:"nearest"});
+      }else if(e.key==="ArrowUp"){
+        e.preventDefault();
+        activeIdx=Math.max(activeIdx-1,0);
+        opts.forEach((o,i)=>o.classList.toggle("active",i===activeIdx));
+        if(opts[activeIdx]) opts[activeIdx].scrollIntoView({block:"nearest"});
+      }else if(e.key==="Enter"){
+        e.preventDefault();
+        if(activeIdx>=0&&opts[activeIdx]) commit(opts[activeIdx].dataset.val);
+        else if(input.value.trim()!=="") commit(input.value.trim());
+      }else if(e.key==="Escape"){
+        input.value=input.dataset.committed||"";
+        state.classes[idx].nome=input.value;save();
+        closeList();input.blur();
+      }
+    });
+    list.addEventListener("mousedown",e=>{
+      const opt=e.target.closest(".combo-opt");
+      if(!opt) return;
+      e.preventDefault();commit(opt.dataset.val);
+    });
+    input.addEventListener("blur",()=>{
+      closeList();
+      const committed=input.dataset.committed||"";
+      const current=input.value.trim();
+      if(current===""&&committed!==""){input.value=committed;state.classes[idx].nome=committed;save();return}
+      if(current!==committed&&current!=="") commit(current);
+    });
+  });
+
+  container.querySelectorAll("select[data-escolha-bonus]").forEach(sel=>{
+    sel.addEventListener("change",()=>{
+      const i=Number(sel.dataset.idx);
+      state.classes[i].escolhaBonus=sel.value==="pm"?"pm":"pv";
+      save();recalc();renderEquipamento();
+    });
+  });
+  container.querySelectorAll("select[data-poder-heroico]").forEach(sel=>{
+    sel.addEventListener("change",()=>{
+      const i=Number(sel.dataset.idx);
+      state.classes[i].poderHeroico=sel.value;
+      save();renderClasses();
+    });
+  });
+  container.querySelectorAll("input[data-hab]:not([data-text-idx])").forEach(inp=>{
+    inp.addEventListener("input",()=>{
+      const i=Number(inp.dataset.idx);
+      const hab=inp.dataset.hab;
+      let v=Number(inp.value)||0;if(v<0) v=0;
+      const defRaw=FABULA.classes[state.classes[i].nome];
+      const maxHab=(defRaw?.h||[]).find(h=>h.n===hab)?.m||1;
+      if(v>maxHab) v=maxHab;
+      state.classes[i].habilidades[hab]=v;
+      save();renderClasses();recalc();renderEquipamento();
+      renderSecoesCondicionais();
+    });
+  });
+  container.querySelectorAll("select[data-spell-idx]").forEach(sel=>{
+    sel.addEventListener("change",()=>{
+      const i=Number(sel.dataset.idx);
+      const hab=sel.dataset.hab;
+      const idx=Number(sel.dataset.spellIdx);
+      state.classes[i].magias[hab]=state.classes[i].magias[hab]||[];
+      state.classes[i].magias[hab][idx]=sel.value;
+      save();renderClasses();
+    });
+  });
+  container.querySelectorAll("input[data-text-idx]").forEach(inp=>{
+    inp.addEventListener("input",()=>{
+      const i=Number(inp.dataset.idx);
+      const hab=inp.dataset.hab;
+      const idx=Number(inp.dataset.textIdx);
+      state.classes[i].textos[hab]=state.classes[i].textos[hab]||[];
+      state.classes[i].textos[hab][idx]=inp.value;
+      save();
+      renderImitacaoMagica();
+    });
+  });
+  container.querySelectorAll("[data-remove='classes']").forEach(btn=>{
+    btn.addEventListener("click",()=>{
+      state.classes.splice(Number(btn.dataset.idx),1);
+      save();renderClasses();recalc();renderEquipamento();
+      renderSecoesCondicionais();
+    });
+  });
+}
+
+/* =========================================================================
+   SEÇÕES CONDICIONAIS
+   ========================================================================= */
+function renderSecoesCondicionais(){
+  const temArcanista=temHabilidade("Arcanista","Vincular e Invocar");
+  const secaoArcanos=document.getElementById("secao-arcanos");
+  if(secaoArcanos) secaoArcanos.style.display=temArcanista?"":"none";
+  if(temArcanista) renderArcanosLista();
+
+  const temQuimerista=temHabilidade("Quimerista","Imitação Mágica");
+  const secaoImi=document.getElementById("secao-imitacao");
+  if(secaoImi) secaoImi.style.display=temQuimerista?"":"none";
+  if(temQuimerista) renderImitacaoMagica();
+}
+
+function renderArcanosLista(){
+  const lista=document.getElementById("arcanos-lista");
+  if(!lista) return;
+  lista.innerHTML="";
+  if(state.arcanos.length===0){
+    lista.innerHTML=`<div class="inv-vazio">Nenhum Arcano vinculado ainda. Busque um acima.</div>`;
+    return;
+  }
+  state.arcanos.forEach(a=>{
+    const base=ARCANOS.find(x=>x.n===a.n);
+    const div=document.createElement("div");
+    div.className="arcano-item";
+    const fundidoTag=a.fundido?`<span class="fundido-flag">Fundido agora</span>`:"";
+    div.innerHTML=`
+      <span class="nome">${escapeAttr(a.n)}${fundidoTag}</span>
+      <div class="dominios">Domínios: ${escapeAttr(a.dom||base?.dom||"")}</div>
+      <div class="bloco"><strong>Fundir</strong>${escapeAttr(a.fusao||base?.f||"")}</div>
+      <div class="bloco"><strong>Dispensar</strong>${escapeAttr(a.dispensa||base?.d||"")}</div>
+      <div class="controles">
+        <button class="btn-fundir ${a.fundido?"ativo":""}" data-arc-id="${a.id}">${a.fundido?"Desmarcar fundido":"Marcar como fundido"}</button>
+        <button class="btn-remove-arcano" data-arc-id="${a.id}">Remover</button>
+      </div>`;
+    lista.appendChild(div);
+  });
+  lista.querySelectorAll(".btn-fundir").forEach(btn=>{
+    btn.addEventListener("click",()=>{
+      const a=state.arcanos.find(x=>x.id===btn.dataset.arcId);
+      if(!a) return;
+      a.fundido=!a.fundido;save();renderArcanosLista();
+    });
+  });
+  lista.querySelectorAll(".btn-remove-arcano").forEach(btn=>{
+    btn.addEventListener("click",()=>{
+      state.arcanos=state.arcanos.filter(x=>x.id!==btn.dataset.arcId);
+      save();renderArcanosLista();
+    });
+  });
+}
+
+function setupArcanosSearch(){
+  const input=document.getElementById("arcano-search");
+  const list=document.getElementById("arcano-search-list");
+  if(!input||!list) return;
+  let activeIdx=-1;
+  function renderList(f){
+    const q=(f||"").trim().toLowerCase();
+    const filtered=q
+      ?ARCANOS.filter(a=>a.n.toLowerCase().includes(q)||a.dom.toLowerCase().includes(q))
+      :ARCANOS;
+    if(filtered.length===0){
+      list.innerHTML=`<div class="combo-empty">Nenhum Arcano encontrado</div>`;
+    }else{
+      list.innerHTML=filtered.map(a=>`<div class="combo-opt" data-n="${escapeAttr(a.n)}"><strong>${escapeAttr(a.n)}</strong> <span style="color:var(--muted);font-size:11px">— ${escapeAttr(a.dom)}</span></div>`).join("");
+    }
+    activeIdx=-1;
+  }
+  function addArcano(nome){
+    const base=ARCANOS.find(a=>a.n===nome);
+    if(!base) return;
+    if(state.arcanos.some(a=>a.n===nome)){input.value="";list.hidden=true;return}
+    state.arcanos.push({id:uid(),n:base.n,dom:base.dom,fusao:base.f,dispensa:base.d,fundido:false});
+    save();renderArcanosLista();
+    input.value="";list.hidden=true;
+  }
+  input.addEventListener("focus",()=>{renderList(input.value);list.hidden=false});
+  input.addEventListener("click",()=>{if(list.hidden){renderList(input.value);list.hidden=false}});
+  input.addEventListener("input",()=>{renderList(input.value);list.hidden=false});
+  input.addEventListener("keydown",e=>{
+    const opts=list.querySelectorAll(".combo-opt");
+    if(e.key==="ArrowDown"){
+      e.preventDefault();
+      activeIdx=Math.min(activeIdx+1,opts.length-1);
+      opts.forEach((o,i)=>o.classList.toggle("active",i===activeIdx));
+      if(opts[activeIdx]) opts[activeIdx].scrollIntoView({block:"nearest"});
+    }else if(e.key==="ArrowUp"){
+      e.preventDefault();
+      activeIdx=Math.max(activeIdx-1,0);
+      opts.forEach((o,i)=>o.classList.toggle("active",i===activeIdx));
+      if(opts[activeIdx]) opts[activeIdx].scrollIntoView({block:"nearest"});
+    }else if(e.key==="Enter"){
+      e.preventDefault();
+      if(activeIdx>=0&&opts[activeIdx]) addArcano(opts[activeIdx].dataset.n);
+    }else if(e.key==="Escape"){
+      input.value="";list.hidden=true;input.blur();
+    }
+  });
+  list.addEventListener("mousedown",e=>{
+    const opt=e.target.closest(".combo-opt");
+    if(!opt) return;
+    e.preventDefault();addArcano(opt.dataset.n);
+  });
+  input.addEventListener("blur",()=>setTimeout(()=>{list.hidden=true},120));
+}
+
+function renderImitacaoMagica(){
+  const lista=document.getElementById("imitacao-lista");
+  if(!lista) return;
+  const idx=getQuimeristaIndex();
+  if(idx<0){lista.innerHTML="";return}
+  const c=state.classes[idx];
+  const cur=Number(c.habilidades["Imitação Mágica"])||0;
+  const total=cur+2;
+  if(!c.textos) c.textos={};
+  const arr=c.textos["Imitação Mágica"]||[];
+  while(arr.length<total) arr.push("");
+  arr.length=total;
+  c.textos["Imitação Mágica"]=arr;
+  lista.innerHTML="";
+  arr.forEach((val,i)=>{
+    const label=`Magia ${i+1}${i>=cur?" (bônus)":""}`;
+    const div=document.createElement("div");
+    div.className="imita-item";
+    div.innerHTML=`<label>${label}
+      <input type="text" data-imita-idx="${i}" placeholder="Nome da magia aprendida" value="${escapeAttr(val)}" />`;
+    lista.appendChild(div);
+  });
+  lista.querySelectorAll("input[data-imita-idx]").forEach(inp=>{
+    inp.addEventListener("input",()=>{
+      const i=Number(inp.dataset.imitaIdx);
+      state.classes[idx].textos["Imitação Mágica"][i]=inp.value;
+      save();
+    });
+  });
+}
+
+/* =========================================================================
+   INVENTÁRIO
+   ========================================================================= */
+function renderInventario(){
+  const lista=document.getElementById("inv-lista");
+  if(!lista) return;
+  lista.innerHTML="";
+  if(state.inventario.length===0){
+    lista.innerHTML=`<div class="inv-vazio">Inventário vazio. Busque um item acima ou crie um personalizado.</div>`;
+    return;
+  }
+  const slotsUsados={};
+  ["principal","secundaria","armadura","acessorio"].forEach(s=>{
+    if(state.slots[s]) slotsUsados[state.slots[s]]=s;
+  });
+  state.inventario.forEach(item=>{
+    const div=document.createElement("div");
+    div.className="inv-item"+(slotsUsados[item.id]?" equipado":"");
+    const slot=slotsUsados[item.id];
+    const slotLabel={principal:"Mão dominante",secundaria:"Mão secundária",armadura:"Armadura",acessorio:"Acessório"}[slot];
+    const tags=[];
+    if(item.mr) tags.push(`<span class="tag tag-marcial">marcial</span>`);
+    if(item.tipo==="arma"&&item.m===2) tags.push(`<span class="tag tag-duas">2 mãos</span>`);
+    if(item.raro) tags.push(`<span class="tag tag-raro">raro</span>`);
+    let detalhe="";
+    if(item.tipo==="arma") detalhe=`${escapeAttr(item.cat||"")} · ${item.z||0}z · ${escapeAttr(item.d||"")}`;
+    else if(item.tipo==="armadura"){
+      const dF=item.dF!==null&&item.dF!==undefined?`DEF ${item.dF}`:`DEF dado+${item.dB||0}`;
+      detalhe=`${item.z||0}z · ${dF} · DEF.M dado+${item.dMB||0} · Inic ${item.ini||0}`;
+    }
+    else if(item.tipo==="escudo") detalhe=`${item.z||0}z · DEF +${item.dB||0} · DEF.M +${item.dMB||0}`;
+    else if(item.tipo==="acessorio") detalhe=`${item.z||0}z · ${escapeAttr(item.desc||"")}`;
+    if(item.desc&&item.tipo!=="acessorio") detalhe+=` · ${escapeAttr(item.desc)}`;
+    div.innerHTML=`
+      <div class="info">
+        <span class="nome">${escapeAttr(item.n)}${tags.join("")}</span>
+        <div class="detalhe">${nomeTipo(item.tipo)} · ${detalhe}</div>
+      </div>
+      ${slot?`<span style="font-size:11px;color:var(--accent);align-self:center">Em: ${slotLabel}</span>`:`<span></span>`}
+      <button class="btn-remove-inv" data-id="${item.id}">Remover</button>`;
+    lista.appendChild(div);
+  });
+  lista.querySelectorAll(".btn-remove-inv").forEach(btn=>{
+    btn.addEventListener("click",()=>{
+      const id=btn.dataset.id;
+      ["principal","secundaria","armadura","acessorio"].forEach(s=>{
+        if(state.slots[s]===id) state.slots[s]=null;
+      });
+      state.inventario=state.inventario.filter(i=>i.id!==id);
+      save();renderInventario();renderEquipamento();recalc();
+    });
+  });
+}
+
+function setupInvSearch(){
+  const tipoSel=document.getElementById("inv-tipo");
+  const catSel=document.getElementById("inv-cat");
+  const input=document.getElementById("inv-search");
+  const list=document.getElementById("inv-search-list");
+  if(!tipoSel||!catSel||!input||!list) return;
+  function atualizarCategorias(){
+    const t=tipoSel.value;
+    if(t==="arma"){
+      const cats=[...new Set(CATALOGO.filter(i=>i.tipo==="arma").map(i=>i.cat))].sort();
+      catSel.innerHTML=`<option value="">— Todas —</option>`+cats.map(c=>`<option value="${escapeAttr(c)}">${escapeAttr(c)}</option>`).join("");
+      catSel.disabled=false;
+    }else{
+      catSel.innerHTML=`<option value="">— Todas —</option>`;
+      catSel.disabled=true;
+    }
+  }
+  function filtrar(){
+    const t=tipoSel.value;
+    const c=catSel.value;
+    const q=input.value.trim().toLowerCase();
+    return CATALOGO.filter(i=>{
+      if(t&&i.tipo!==t) return false;
+      if(c&&i.cat!==c) return false;
+      if(q){
+        const alvo=(i.n+" "+(i.cat||"")+" "+(i.desc||"")).toLowerCase();
+        if(!alvo.includes(q)) return false;
+      }
+      return true;
+    });
+  }
+  let activeIdx=-1;
+  function renderList(){
+    const filtered=filtrar();
+    if(filtered.length===0){
+      list.innerHTML=`<div class="combo-empty">Nenhum item encontrado</div>`;
+    }else{
+      list.innerHTML=filtered.slice(0,100).map(i=>{
+        const tags=[];
+        if(i.mr) tags.push(`<span class="tag tag-marcial">marcial</span>`);
+        if(i.tipo==="arma"&&i.m===2) tags.push(`<span class="tag tag-duas">2 mãos</span>`);
+        if(i.raro) tags.push(`<span class="tag tag-raro">raro</span>`);
+        return `<div class="combo-opt" data-n="${escapeAttr(i.n)}">
+          <strong>${escapeAttr(i.n)}</strong>
+          <span style="color:var(--muted);font-size:11px"> — ${nomeTipo(i.tipo)}${i.cat?` · ${escapeAttr(i.cat)}`:""} · ${i.z||0}z</span>
+          ${tags.join("")}
+        </div>`;
+      }).join("");
+    }
+    activeIdx=-1;
+  }
+  function addItem(nome){
+    const base=CATALOGO.find(i=>i.n===nome);
+    if(!base) return;
+    state.inventario.push({id:uid(),...structuredClone(base)});
+    save();renderInventario();renderEquipamento();
+    input.value="";list.hidden=true;
+  }
+  tipoSel.addEventListener("change",()=>{atualizarCategorias();if(!list.hidden) renderList()});
+  catSel.addEventListener("change",()=>{if(!list.hidden) renderList()});
+  input.addEventListener("focus",()=>{renderList();list.hidden=false});
+  input.addEventListener("click",()=>{if(list.hidden){renderList();list.hidden=false}});
+  input.addEventListener("input",()=>{renderList();list.hidden=false});
+  input.addEventListener("keydown",e=>{
+    const opts=list.querySelectorAll(".combo-opt");
+    if(e.key==="ArrowDown"){
+      e.preventDefault();
+      activeIdx=Math.min(activeIdx+1,opts.length-1);
+      opts.forEach((o,i)=>o.classList.toggle("active",i===activeIdx));
+      if(opts[activeIdx]) opts[activeIdx].scrollIntoView({block:"nearest"});
+    }else if(e.key==="ArrowUp"){
+      e.preventDefault();
+      activeIdx=Math.max(activeIdx-1,0);
+      opts.forEach((o,i)=>o.classList.toggle("active",i===activeIdx));
+      if(opts[activeIdx]) opts[activeIdx].scrollIntoView({block:"nearest"});
+    }else if(e.key==="Enter"){
+      e.preventDefault();
+      if(activeIdx>=0&&opts[activeIdx]) addItem(opts[activeIdx].dataset.n);
+    }else if(e.key==="Escape"){
+      input.value="";list.hidden=true;input.blur();
+    }
+  });
+  list.addEventListener("mousedown",e=>{
+    const opt=e.target.closest(".combo-opt");
+    if(!opt) return;
+    e.preventDefault();addItem(opt.dataset.n);
+  });
+  input.addEventListener("blur",()=>setTimeout(()=>{list.hidden=true},120));
+  atualizarCategorias();
+}
+
+function abrirModalCustom(){
+  const root=document.getElementById("modal-root");
+  const bg=document.createElement("div");
+  bg.className="modal-bg";
+  bg.innerHTML=`
+    <div class="modal">
+      <h3>Novo item personalizado</h3>
+      <div class="grid grid-2">
+        <label class="full">Nome <input type="text" id="ci-nome" /></label>
+        <label>Tipo
+          <select id="ci-tipo">
+            <option value="arma">Arma</option>
+            <option value="armadura">Armadura</option>
+            <option value="escudo">Escudo</option>
+            <option value="acessorio">Acessório</option>
+          </select>
+        </label>
+        <label>Categoria (armas) <input type="text" id="ci-cat" placeholder="Espada, Arco..." /></label>
+        <label>Custo (zênites) <input type="number" id="ci-z" value="0" min="0" /></label>
+        <label>Marcial?
+          <select id="ci-mr">
+            <option value="">Não</option>
+            <option value="arma_cac">Arma corpo a corpo</option>
+            <option value="arma_dist">Arma à distância</option>
+            <option value="armadura">Armadura</option>
+            <option value="escudo">Escudo</option>
+          </select>
+        </label>
+      </div>
+      <div id="ci-arma-fields">
+        <div class="grid grid-2">
+          <label class="full">Precisão <input type="text" id="ci-p" placeholder="[DES + VIG] +1" /></label>
+          <label class="full">Dano <input type="text" id="ci-d" placeholder="[RA + 6] físico" /></label>
+          <label>Mãos
+            <select id="ci-m">
+              <option value="1">Uma mão</option>
+              <option value="2">Duas mãos</option>
+            </select>
+          </label>
+          <label>Alcance
+            <select id="ci-a">
+              <option value="cac">Corpo a corpo</option>
+              <option value="dist">À distância</option>
+            </select>
+          </label>
+        </div>
+      </div>
+      <div id="ci-armadura-fields" style="display:none">
+        <div class="grid grid-2">
+          <label>DEF fixa (vazio = dado de DES)
+            <input type="number" id="ci-dF" placeholder="10" />
+          </label>
+          <label>Bônus DEF <input type="number" id="ci-dB" value="0" /></label>
+          <label>Bônus DEF.M <input type="number" id="ci-dMB" value="0" /></label>
+          <label>Iniciativa <input type="number" id="ci-ini" value="0" /></label>
+        </div>
+      </div>
+      <div id="ci-escudo-fields" style="display:none">
+        <div class="grid grid-2">
+          <label>Bônus DEF <input type="number" id="ci-edB" value="2" /></label>
+          <label>Bônus DEF.M <input type="number" id="ci-edMB" value="0" /></label>
+        </div>
+      </div>
+      <label class="full">Descrição / notas
+        <textarea id="ci-desc" rows="2"></textarea>
+      </label>
+      <div class="modal-actions">
+        <button id="ci-cancel">Cancelar</button>
+        <button id="ci-ok" style="border-color:var(--accent);color:var(--accent)">Adicionar</button>
+      </div>
+    </div>`;
+  root.innerHTML="";
+  root.appendChild(bg);
+  const tipo=bg.querySelector("#ci-tipo");
+  const armaF=bg.querySelector("#ci-arma-fields");
+  const armF=bg.querySelector("#ci-armadura-fields");
+  const escF=bg.querySelector("#ci-escudo-fields");
+  tipo.addEventListener("change",()=>{
+    const t=tipo.value;
+    armaF.style.display=t==="arma"?"":"none";
+    armF.style.display=t==="armadura"?"":"none";
+    escF.style.display=t==="escudo"?"":"none";
+  });
+  bg.querySelector("#ci-cancel").addEventListener("click",()=>root.innerHTML="");
+  bg.addEventListener("click",e=>{if(e.target===bg) root.innerHTML=""});
+  bg.querySelector("#ci-ok").addEventListener("click",()=>{
+    const nome=bg.querySelector("#ci-nome").value.trim();
+    if(!nome){alert("Dê um nome ao item.");return}
+    const t=tipo.value;
+    const item={
+      id:uid(),tipo:t,n:nome,
+      z:Number(bg.querySelector("#ci-z").value)||0,
+      mr:bg.querySelector("#ci-mr").value||null,
+      desc:bg.querySelector("#ci-desc").value.trim()
+    };
+    if(t==="arma"){
+      item.cat=bg.querySelector("#ci-cat").value.trim()||"Personalizada";
+      item.p=bg.querySelector("#ci-p").value.trim()||"[DES + VIG]";
+      item.d=bg.querySelector("#ci-d").value.trim()||"[RA + 0] físico";
+      item.m=Number(bg.querySelector("#ci-m").value)||1;
+      item.a=bg.querySelector("#ci-a").value;
+    }else if(t==="armadura"){
+      const dF=bg.querySelector("#ci-dF").value;
+      item.dF=dF===""?null:Number(dF);
+      item.dB=Number(bg.querySelector("#ci-dB").value)||0;
+      item.dMB=Number(bg.querySelector("#ci-dMB").value)||0;
+      item.ini=Number(bg.querySelector("#ci-ini").value)||0;
+    }else if(t==="escudo"){
+      item.dB=Number(bg.querySelector("#ci-edB").value)||0;
+      item.dMB=Number(bg.querySelector("#ci-edMB").value)||0;
+    }
+    state.inventario.push(item);
+    save();renderInventario();renderEquipamento();
+    root.innerHTML="";
+  });
+}
+
+/* =========================================================================
+   EQUIPAMENTO
+   ========================================================================= */
+function renderEquipamento(){
+  const aviso=document.getElementById("equip-aviso");
+  if(!aviso) return;
+  const perms=permissoesMarciais();
+  const msgs=[];
+  ["principal","secundaria","armadura","acessorio"].forEach(s=>{
+    const it=getItemById(state.slots[s]);
+    if(!it) return;
+    if(it.mr&&!perms.has(it.mr)){
+      msgs.push(`⚠️ <strong>${escapeAttr(it.n)}</strong> é marcial e você não tem permissão de classe.`);
+    }
+  });
+  if(msgs.length>0){
+    aviso.className="equip-aviso aviso";
+    aviso.innerHTML=msgs.join("<br>");
+  }else{
+    aviso.className="equip-aviso ok";
+    aviso.innerHTML="✅ Equipamento válido para suas classes.";
+  }
+  document.querySelectorAll(".slot").forEach(el=>{
+    const slot=el.dataset.slot;
+    const body=el.querySelector(".slot-body");
+    body.innerHTML="";
+    el.classList.remove("disabled");
+    const principalItem=getItemById(state.slots.principal);
+    const duasMaos=principalItem&&principalItem.tipo==="arma"&&principalItem.m===2;
+    if(slot==="secundaria"&&duasMaos){
+      el.classList.add("disabled");
+      body.innerHTML=`<div class="slot-msg">Bloqueado: arma de duas mãos equipada na mão dominante</div>`;
+      return;
+    }
+    const itemAtual=getItemById(state.slots[slot]);
+    if(itemAtual){
+      const div=document.createElement("div");
+      div.className="slot-item";
+      const tags=[];
+      if(itemAtual.mr) tags.push(`<span class="tag tag-marcial">marcial</span>`);
+      if(itemAtual.tipo==="arma"&&itemAtual.m===2) tags.push(`<span class="tag tag-duas">2 mãos</span>`);
+      if(itemAtual.raro) tags.push(`<span class="tag tag-raro">raro</span>`);
+      let detalhe="";
+      if(itemAtual.tipo==="arma") detalhe=`<div class="stat-line">${escapeAttr(itemAtual.p||"")} → ${escapeAttr(itemAtual.d||"")}</div>`;
+      else if(itemAtual.tipo==="armadura"){
+        const dF=itemAtual.dF!==null&&itemAtual.dF!==undefined?`${itemAtual.dF}`:`dado DES +${itemAtual.dB||0}`;
+        detalhe=`<div class="stat-line">DEF ${escapeAttr(dF)} · DEF.M dado AST +${itemAtual.dMB||0} · Inic ${itemAtual.ini||0}</div>`;
+      }else if(itemAtual.tipo==="escudo") detalhe=`<div class="stat-line">DEF +${itemAtual.dB||0} · DEF.M +${itemAtual.dMB||0}</div>`;
+      else if(itemAtual.tipo==="acessorio") detalhe=`<div class="stat-line">${escapeAttr(itemAtual.desc||"")}</div>`;
+      div.innerHTML=`
+        <span class="nome">${escapeAttr(itemAtual.n)} ${tags.join("")}</span>
+        <div class="meta">${nomeTipo(itemAtual.tipo)} · ${itemAtual.z||0}z</div>
+        ${detalhe}
+        <button class="unequip">✕</button>`;
+      div.querySelector(".unequip").addEventListener("click",()=>{
+        state.slots[slot]=null;save();renderEquipamento();renderInventario();recalc();
+      });
+      body.appendChild(div);
+      return;
+    }
+    const perms2=permissoesMarciais();
+    const ok=it=>!it.mr||perms2.has(it.mr);
+    const opcoes=state.inventario.filter(i=>{
+      if(!ok(i)) return false;
+      if(slot==="principal") return i.tipo==="arma";
+      if(slot==="secundaria") return i.tipo==="escudo"||(i.tipo==="arma"&&i.m===1);
+      if(slot==="armadura") return i.tipo==="armadura";
+      if(slot==="acessorio") return i.tipo==="acessorio";
+      return false;
+    });
+    if(opcoes.length===0){
+      body.innerHTML=`<div class="slot-empty">Nenhum item compatível no inventário</div>`;
+      return;
+    }
+    const combo=document.createElement("div");
+    combo.className="combo";
+    combo.innerHTML=`<input type="text" class="combo-input" placeholder="Escolher do inventário..." autocomplete="off" /><div class="combo-list" hidden></div>`;
+    body.appendChild(combo);
+    const input=combo.querySelector(".combo-input");
+    const list=combo.querySelector(".combo-list");
+    let activeIdx=-1;
+    function renderList(f){
+      const q=(f||"").trim().toLowerCase();
+      const filtered=q?opcoes.filter(o=>o.n.toLowerCase().includes(q)):opcoes;
+      if(filtered.length===0){
+        list.innerHTML=`<div class="combo-empty">Nenhum item compatível</div>`;
+      }else{
+        list.innerHTML=filtered.map(o=>{
+          const tags=[];
+          if(o.mr) tags.push(`<span class="tag tag-marcial">marcial</span>`);
+          if(o.tipo==="arma"&&o.m===2) tags.push(`<span class="tag tag-duas">2 mãos</span>`);
+          if(o.raro) tags.push(`<span class="tag tag-raro">raro</span>`);
+          return `<div class="combo-opt" data-id="${o.id}"><strong>${escapeAttr(o.n)}</strong> <span style="color:var(--muted);font-size:11px">— ${nomeTipo(o.tipo)}${o.cat?` · ${escapeAttr(o.cat)}`:""}</span> ${tags.join("")}</div>`;
+        }).join("");
+      }
+      activeIdx=-1;
+    }
+    function closeList(){list.hidden=true;activeIdx=-1}
+    function commit(id){
+      const it=getItemById(id);
+      if(!it) return;
+      if(slot==="principal"&&it.tipo==="arma"&&it.m===2) state.slots.secundaria=null;
+      state.slots[slot]=id;
+      save();renderEquipamento();renderInventario();recalc();
+    }
+    input.addEventListener("focus",()=>{renderList("");list.hidden=false});
+    input.addEventListener("click",()=>{if(list.hidden){renderList("");list.hidden=false}});
+    input.addEventListener("input",()=>{renderList(input.value);list.hidden=false});
+    input.addEventListener("keydown",e=>{
+      const opts=list.querySelectorAll(".combo-opt");
+      if(e.key==="ArrowDown"){
+        e.preventDefault();
+        activeIdx=Math.min(activeIdx+1,opts.length-1);
+        opts.forEach((o,i)=>o.classList.toggle("active",i===activeIdx));
+        if(opts[activeIdx]) opts[activeIdx].scrollIntoView({block:"nearest"});
+      }else if(e.key==="ArrowUp"){
+        e.preventDefault();
+        activeIdx=Math.max(activeIdx-1,0);
+        opts.forEach((o,i)=>o.classList.toggle("active",i===activeIdx));
+        if(opts[activeIdx]) opts[activeIdx].scrollIntoView({block:"nearest"});
+      }else if(e.key==="Enter"){
+        e.preventDefault();
+        if(activeIdx>=0&&opts[activeIdx]) commit(opts[activeIdx].dataset.id);
+      }else if(e.key==="Escape"){
+        input.value="";closeList();input.blur();
+      }
+    });
+    list.addEventListener("mousedown",e=>{
+      const opt=e.target.closest(".combo-opt");
+      if(!opt) return;
+      e.preventDefault();commit(opt.dataset.id);
+    });
+    input.addEventListener("blur",()=>setTimeout(closeList,120));
+  });
+}
+
+function atualizarStatusNivel(){
+  const el=document.getElementById("nivel-status");
+  if(!el) return;
+  const np=Number(state.nivel)||0;
+  const sc=state.classes.reduce((s,c)=>s+nivelDaClasse(c),0);
+  const dif=np-sc;
+  let classe="ok",msg=`✅ Nível do personagem (${np}) = soma das classes (${sc})`;
+  if(dif>0){classe="warn-baixo";msg=`⚠️ Faltam ${dif} nível(is). Personagem: ${np} · Classes: ${sc}`}
+  else if(dif<0){classe="warn-alto";msg=`⚠️ Excesso de ${Math.abs(dif)} nível(is). Personagem: ${np} · Classes: ${sc}`}
+  el.className=`nivel-status ${classe}`;
+  el.textContent=msg;
+}
+
+function renderLacos(){
+  const c=document.getElementById("lacos");
+  if(!c) return;
+  c.innerHTML="";
+  state.lacos.forEach((l,i)=>{
+    const row=document.createElement("div");
+    row.className="row row-laco";
+    row.style.cssText="display:grid;grid-template-columns:2fr 1fr auto;gap:8px;align-items:end;margin-bottom:8px";
+    row.innerHTML=`
+      <label>Alvo <input type="text" data-idx="${i}" data-field="alvo" value="${escapeAttr(l.alvo)}" /></label>
+      <div style="display:flex;gap:4px;flex-wrap:wrap">
+        ${EMOCOES.map(e=>`
+          <label style="display:inline-flex;align-items:center;gap:4px;background:var(--bg-input);border:1px solid var(--border);border-radius:4px;padding:3px 6px;font-size:11px;cursor:pointer">
+            <input type="checkbox" data-idx="${i}" data-emo="${e}" ${l.emocoes?.includes(e)?"checked":""} /> ${e}
+          </label>`).join("")}
+      </div>
+      <button class="remove-btn" data-remove="lacos" data-idx="${i}">✕</button>`;
+    c.appendChild(row);
+  });
+  c.querySelectorAll("input[data-field='alvo']").forEach(inp=>{
+    inp.addEventListener("input",()=>{state.lacos[Number(inp.dataset.idx)].alvo=inp.value;save()});
+  });
+  c.querySelectorAll("input[data-emo]").forEach(inp=>{
+    inp.addEventListener("change",()=>{
+      const i=Number(inp.dataset.idx);const e=inp.dataset.emo;
+      const l=state.lacos[i];l.emocoes=l.emocoes||[];
+      if(inp.checked){if(!l.emocoes.includes(e)) l.emocoes.push(e)}
+      else l.emocoes=l.emocoes.filter(x=>x!==e);
+      save();renderLacos();
+    });
+  });
+  c.querySelectorAll("[data-remove='lacos']").forEach(btn=>{
+    btn.addEventListener("click",()=>{state.lacos.splice(Number(btn.dataset.idx),1);save();renderLacos()});
+  });
+}
+
+function renderDiario(){
+  const lista=document.getElementById("diario-lista");
+  if(!lista) return;
+  lista.innerHTML="";
+  if(state.diario.length===0){
+    lista.innerHTML=`<div class="inv-vazio">Sem entradas. Clique em "+ Entrada" para começar.</div>`;
+    return;
+  }
+  state.diario.forEach(d=>{
+    const div=document.createElement("div");
+    div.className="diario-item";
+    div.innerHTML=`
+      <div class="diario-head">
+        <input type="text" data-diario-id="${d.id}" data-field="data"
+               placeholder="Data / Sessão" value="${escapeAttr(d.data)}" style="width:150px" />
+        <input type="text" data-diario-id="${d.id}" data-field="titulo"
+               placeholder="Título da sessão" value="${escapeAttr(d.titulo)}" />
+        <button class="btn-remove-diario" data-diario-id="${d.id}">✕</button>
+      </div>
+      <textarea data-diario-id="${d.id}" data-field="texto" rows="4"
+                placeholder="O que aconteceu...">${escapeAttr(d.texto)}</textarea>`;
+    lista.appendChild(div);
+  });
+  lista.querySelectorAll("[data-diario-id][data-field]").forEach(el=>{
+    el.addEventListener("input",()=>{
+      const d=state.diario.find(x=>x.id===el.dataset.diarioId);
+      if(d) d[el.dataset.field]=el.value;
+      save();
+    });
+  });
+  lista.querySelectorAll(".btn-remove-diario").forEach(btn=>{
+    btn.addEventListener("click",()=>{
+      state.diario=state.diario.filter(x=>x.id!==btn.dataset.diarioId);
+      save();renderDiario();
+    });
+  });
+}
+
+function recalc(){
+  const n=Number(state.nivel)||0;
+  const des=Number(state.atributos.des)||0;
+  const ast=Number(state.atributos.ast)||0;
+  const vig=Number(state.atributos.vig)||0;
+  const von=Number(state.atributos.von)||0;
+  let bonusPV=0,bonusPM=0,bonusPI=0;
+  state.classes.forEach(c=>{
+    if(nivelDaClasse(c)<=0) return;
+    const def=FABULA.classes[c.nome];
+    if(!def||!def.b) return;
+    const b=def.b;
+    if(b.pv) bonusPV+=b.pv;
+    if(b.pm) bonusPM+=b.pm;
+    if(b.pi) bonusPI+=b.pi;
+    if(b.escolha==="pvpm"){
+      const v=b.valor||5;
+      if(c.escolhaBonus==="pm") bonusPM+=v;else bonusPV+=v;
+    }
+  });
+  const pvMax=n+5*vig+bonusPV+(Number(state.pv.bonus)||0);
+  const pmMax=n+5*von+bonusPM+(Number(state.pm.bonus)||0);
+  const piMax=6+bonusPI+(Number(state.pi.bonus)||0);
+  const crise=Math.floor(pvMax/2);
+  const arm=getItemById(state.slots.armadura);
+  const escItem=getItemById(state.slots.secundaria);
+  const escudo=(escItem&&escItem.tipo==="escudo")?escItem:null;
+  const perms=permissoesMarciais();
+  let defBase=des,defMBase=ast,inicEquip=0;
+  if(arm&&!(arm.mr==="armadura"&&!perms.has("armadura"))){
+    if(arm.dF!==null&&arm.dF!==undefined) defBase=arm.dF;
+    else defBase=des+(arm.dB||0);
+    defMBase=ast+(arm.dMB||0);
+    inicEquip+=(arm.ini||0);
+  }
+  if(escudo&&!(escudo.mr==="escudo"&&!perms.has("escudo"))){
+    defBase+=(escudo.dB||0);
+    defMBase+=(escudo.dMB||0);
+  }
+  const defesa=defBase+(Number(state.defesa.bonus)||0);
+  const defM=defMBase+(Number(state.defM.bonus)||0);
+  const inic=inicEquip+(Number(state.iniciativa.bonus)||0);
+  setCalc("pvMax",pvMax);setCalc("pmMax",pmMax);setCalc("piMax",piMax);
+  setCalc("crise",crise);setCalc("defesa",defesa);setCalc("defM",defM);setCalc("iniciativa",inic);
+  setCalc("nivelDisplay",n);
+  ["pv","pm","pi"].forEach(k=>{
+    const el=document.querySelector(`[data-bind="${k}.atual"]`);
+    if(el&&(el.value===""||el.value==="0")){
+      const max={pv:pvMax,pm:pmMax,pi:piMax}[k];
+      el.placeholder=max;
+    }
+  });
+  atualizarStatusNivel();
+  atualizarBotaoNivel();
+}
+function setCalc(name,value){document.querySelectorAll(`[data-calc="${name}"]`).forEach(el=>{el.textContent=value})}
+
+function setupButtons(){
+  document.querySelectorAll("[data-add]").forEach(btn=>{
+    btn.addEventListener("click",()=>{
+      const t=btn.dataset.add;
+      if(t==="classes") state.classes.push({nome:"",habilidades:{},magias:{},textos:{},expandida:false,escolhaBonus:"pv",poderHeroico:""});
+      if(t==="lacos") state.lacos.push({alvo:"",emocoes:[]});
+      save();
+      if(t==="classes"){renderClasses();recalc();renderEquipamento();renderSecoesCondicionais()}
+      if(t==="lacos") renderLacos();
+    });
+  });
+  const bc=document.getElementById("btn-add-custom");
+  if(bc) bc.addEventListener("click",abrirModalCustom);
+  const bd=document.getElementById("btn-add-diario");
+  if(bd) bd.addEventListener("click",()=>{
+    state.diario.push({id:uid(),data:"",titulo:"",texto:""});
+    save();renderDiario();
+  });
+  const exp=document.getElementById("btn-export");
+  if(exp) exp.addEventListener("click",()=>{
+    const blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement("a");
+    a.href=url;a.download=`fabula-${(state.nome||"personagem").replace(/\s+/g,"_")}.json`;
+    a.click();URL.revokeObjectURL(url);
+  });
+  const imp=document.getElementById("btn-import");
+  if(imp) imp.addEventListener("click",()=>document.getElementById("file-import").click());
+  const fi=document.getElementById("file-import");
+  if(fi) fi.addEventListener("change",e=>{
+    const file=e.target.files[0];if(!file) return;
+    const r=new FileReader();
+    r.onload=()=>{
+      try{
+        const data=JSON.parse(r.result);
+        state=sanitize(data);
+        localStorage.setItem(STORAGE_KEY,JSON.stringify(state));
+        location.reload();
+      }catch{alert("Arquivo inválido.")}
+    };
+    r.readAsText(file);
+  });
+  const rst=document.getElementById("btn-reset");
+  if(rst) rst.addEventListener("click",()=>{
+    if(!confirm("Tem certeza? Todos os dados serão perdidos.")) return;
+    localStorage.removeItem(STORAGE_KEY);location.reload();
+  });
+}
+
+function init(){
+  bindInputs();
+  renderClasses();
+  renderInventario();
+  setupInvSearch();
+  renderEquipamento();
+  renderLacos();
+  renderDiario();
+  setupButtons();
+  setupArcanosSearch();
+  setupLevelUp();
+  renderSecoesCondicionais();
+  recalc();
+  atualizarBotaoNivel();
+}
+document.addEventListener("DOMContentLoaded",init);
+</script>
+
+<!-- PWA: registro do Service Worker -->
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker
+      .register("sw.js")
+      .then((reg) => console.log("SW registrado:", reg.scope))
+      .catch((err) => console.warn("SW falhou:", err));
+  });
+}
+</script>
+</body>
+</html>
